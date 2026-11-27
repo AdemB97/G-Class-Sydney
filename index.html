@@ -3,24 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#07100C">
+<meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="G Class Crew">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<style>html{height:100%;background:#07100C}:root{color-scheme:dark;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-family:system-ui,sans-serif;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>html{height:100%;background:#000000}:root{color-scheme:dark;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-family:system-ui,sans-serif;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>G Class Crew</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap">
 <style>
 /* Layout: single phone-width column app, sticky top bar, bottom tab bar; owner view widens to a roster grid */
 :root{
-  /* G Class Hire brand kit (brand/brand-kit.md): dark racing green, gold as a sharp accent, ivory text */
-  --brand:#0E3B2B; --brand-2:#07100C; --brand-fg:#F3EEE3; --brand-muted:#93A096;
-  --bg:#07100C; --surface:#0E1B15; --surface-2:#15271F; --fg:#F3EEE3; --muted:#93A096; --line:#23392E;
-  --accent:#C9A86A; --accent-fg:#07100C; --accent-soft:#2B2312; --gold-light:#E7D3A4;
-  --ok:#7CC49A; --ok-soft:#15261C; --no:#E08479; --no-soft:#2C1714; --warn:#E3B866; --warn-soft:#2B2312;
+  /* G Class Hire, black and white: true black, greys, white as the accent. Status colours keep their meaning. */
+  --brand:#1A1A1A; --brand-2:#000000; --brand-fg:#FFFFFF; --brand-muted:#9A9A9A;
+  --bg:#000000; --surface:#111111; --surface-2:#1C1C1C; --fg:#FFFFFF; --muted:#8C8C8C; --line:#2A2A2A;
+  --accent:#FFFFFF; --accent-fg:#000000; --accent-soft:#1F1F1F; --gold-light:#FFFFFF;
+  --ok:#9BD3AE; --ok-soft:#14221A; --no:#EB8C82; --no-soft:#2A1614; --warn:#E8C27A; --warn-soft:#2A2314;
   --font-display:"Archivo","Helvetica Neue",Arial,sans-serif;
   --font-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
   --font-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
@@ -230,13 +230,68 @@ body::before,.top,.tabs{background:var(--bg)}
 /* the first job card on Today gets the hero treatment */
 main > .card:has(.pickup){background:linear-gradient(160deg,var(--brand) 0%,var(--surface) 70%);border-color:var(--accent)}
 .mono{font-family:var(--font-mono)}
+
+/* scale: search, day tabs, grouped job rows, compact roster */
+.search{background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:10px 12px;width:100%;min-height:42px;color:var(--fg)}
+.who-list{display:flex;flex-direction:column;max-height:46vh;overflow:auto;border:1px solid var(--line);border-radius:8px}
+.who-list button{display:flex;align-items:center;gap:10px;background:none;border:0;border-bottom:1px solid var(--line);padding:10px 12px;text-align:left;cursor:pointer;color:var(--fg)}
+.who-list button:last-child{border-bottom:0}
+.who-list button b{flex:1}
+.who-list button .muted{font-size:.78rem}
+.who-list button[aria-pressed="true"]{background:var(--surface-2);box-shadow:inset 3px 0 0 var(--accent)}
+.who-list .avatar{width:30px;height:30px;font-size:.72rem}
+#carlist{max-height:52vh;overflow:auto}
+.daytabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
+.daytabs button{flex:none;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 14px;color:var(--fg);cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+.daytabs button b{font-family:var(--font-display);font-weight:800}
+.daytabs button span{font-size:.72rem;color:var(--muted)}
+.daytabs button[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 -2px 0 var(--accent)}
+.seg{display:flex;gap:4px;flex-wrap:wrap}
+.seg button{background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:6px 10px;font-size:.78rem;font-weight:700;color:var(--muted);cursor:pointer}
+.seg button span{opacity:.7;margin-left:2px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.stat b small{font-size:.8rem;color:var(--muted);font-weight:600}
+#joblist{display:flex;flex-direction:column;max-height:70vh;overflow:auto}
+.dayhead{position:sticky;top:0;background:var(--surface);z-index:1;padding:10px 0 6px;font-family:var(--font-display);font-weight:800;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline}
+.dayhead span{font-family:var(--font-body);font-size:.75rem;color:var(--muted);font-weight:600}
+.jobrow{display:flex;gap:12px;align-items:flex-start;background:none;border:0;border-bottom:1px solid var(--line);padding:10px 0;text-align:left;cursor:pointer;color:var(--fg);width:100%}
+.jobrow:hover{background:var(--surface-2)}
+.jobrow .jt{min-width:62px;color:var(--muted);padding-top:2px}
+.jobrow .jb{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.jobrow .jb b{font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:4px}
+.chip{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:4px;padding:2px 6px;font-size:.72rem;font-weight:800;font-family:var(--font-mono)}
+.chip i{font-style:normal;font-family:var(--font-body);font-weight:500;color:var(--muted)}
+.rosterwrap{max-height:60vh;overflow:auto}
+.roster thead th{position:sticky;top:0;background:var(--surface);z-index:2}
+.roster thead th:first-child{z-index:3}
+.roster thead th em{display:block;font-style:normal;font-size:.6rem;color:var(--ok);font-weight:700}
+.cell{width:34px;height:28px;font-size:.62rem}
+#fleetlist{max-height:65vh;overflow:auto}
+#stafflist{max-height:60vh;overflow:auto}
+
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.cal-h{text-align:center;font-size:.62rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-bottom:4px}
+.cal-d{position:relative;aspect-ratio:1/1.1;min-width:0;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg);display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;padding:4px 5px;cursor:pointer;text-align:left;overflow:hidden}
+.cal-d .n{font-size:.7rem;color:var(--muted);font-weight:700}
+.cal-d b{font-family:var(--font-display);font-weight:800;font-size:1.05rem;line-height:1}
+.cal-d i{font-style:normal;font-size:.56rem;color:var(--muted);white-space:nowrap}
+.cal-d em{position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--warn)}
+.cal-d.lvl1{background:#161616}.cal-d.lvl2{background:#202020}.cal-d.lvl3{background:#2C2C2C}.cal-d.lvl4{background:#3A3A3A}
+.cal-d.today{border-color:var(--fg)}
+.cal-d[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+.cal-d[aria-pressed="true"] .n,.cal-d[aria-pressed="true"] i{color:#444}
+#caljobs{display:flex;flex-direction:column;max-height:60vh;overflow:auto}
+.tabs button{font-size:.68rem}
+@media (max-width:380px){.cal-d i{display:none}}
 </style>
 
 <div id="app"></div>
 
 <script>
 (function(){
-const KEY='gclass-crew-demo-v4';
+const pl=(n,w)=>n+' '+w+(n===1?'':'s');
+const KEY='gclass-crew-demo-v6';
 const pad=n=>String(n).padStart(2,'0');
 const iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
 const today=()=>{const d=new Date();d.setHours(0,0,0,0);return d};
@@ -254,11 +309,18 @@ const h12=t=>{if(!/^\d\d:\d\d$/.test(t||''))return t||'';let [h,m]=t.split(':').
 const addHours=(t,hrs)=>{if(!/^\d\d:\d\d$/.test(t||'')||!hrs)return'';const [h,m]=t.split(':').map(Number);const mins=h*60+m+Math.round(hrs*60);return pad(Math.floor(mins/60)%24)+':'+pad(mins%60)};
 
 /* ---------- Run sheet parser (WhatsApp text -> job) ---------- */
-const CAR_KEYS=[['c1',/cullinan/i],['c2',/limo|chrysler/i],['c3',/urus|lambo/i],['c4',/ghost/i],['c5',/g\s*-?\s*wagon|g\s*class|g63/i]];
-function matchCar(txt){for(const [id,re] of CAR_KEYS) if(re.test(txt)&&S.cars.some(c=>c.id===id)) return id;
-  const t=txt.toLowerCase();const c=S.cars.find(c=>t.includes(c.name.toLowerCase())||c.name.toLowerCase().includes(t.trim()));return c?c.id:''}
+// Keyword -> which cars in the fleet it can mean. Several cars can share a keyword (e.g. 2 Ghosts, 2 Maybachs).
+const CAR_KEYS=[/cullinan/i,/ghost/i,/dawn/i,/phantom/i,/chrysler|^limo/i,/hummer/i,/urus/i,/revuelto/i,/aventador/i,/ferrari|812/i,/mclaren|720/i,/porsche|gt3/i,/maybach/i,/g\s*-?\s*wagon|g\s*class|g63/i,/v[\s-]*class/i,/austin|princess/i,/220\s*se/i,/eleanor|shelby|mustang/i,/charger|dodge/i,/harley/i];
+function carCandidates(txt){
+  const t=(txt||'').trim();if(!t)return[];const low=t.toLowerCase();
+  // exact-ish name first ("Chrysler Limo S2"), then by model keyword ("Ghosts" -> both Ghosts)
+  if(low.length>=4){const ex=S.cars.filter(c=>c.name.toLowerCase()===low||c.name.toLowerCase().startsWith(low+' ')||low.startsWith(c.name.toLowerCase()));if(ex.length)return ex.map(c=>c.id)}
+  for(const re of CAR_KEYS) if(re.test(t)){const cs=S.cars.filter(c=>re.test(c.name));if(cs.length)return cs.map(c=>c.id)}
+  if(low.length<3)return[];
+  return S.cars.filter(c=>low.includes(c.name.toLowerCase())||c.name.toLowerCase().includes(low)).map(c=>c.id)}
+function matchCar(txt){return carCandidates(txt)[0]||''}
 function matchWorker(txt){const t=txt.trim().toLowerCase();if(!t)return'';
-  let w=S.workers.find(w=>w.name.toLowerCase()===t)||S.workers.find(w=>w.name.toLowerCase().startsWith(t))||S.workers.find(w=>t.startsWith(w.name.toLowerCase().split(' ')[0]));return w?w.id:''}
+  const w=S.workers.find(w=>w.name.toLowerCase()===t)||S.workers.find(w=>w.name.toLowerCase().startsWith(t+' '))||S.workers.find(w=>w.name.toLowerCase().startsWith(t))||(t.length>2&&S.workers.find(w=>t.startsWith(w.name.toLowerCase().split(' ')[0]+' ')));return w?w.id:''}
 function parseTime(raw,ctx,warns){
   if(!raw)return {text:'',t24:''};
   const m=raw.match(/(\d{1,2})(?:[:.](\d{2}))?\s*(am|pm)?/i);
@@ -266,34 +328,41 @@ function parseTime(raw,ctx,warns){
   let h=+m[1],mi=+(m[2]||0),ap=(m[3]||'').toLowerCase();
   if(ap==='am'&&h<9&&/ceremony|reception|photos|getaway/i.test(ctx)){warns.push(`${ctx} time says ${raw.trim()}. I've read it as ${h}:${pad(mi)}pm.`);ap='pm'}
   if(!ap) ap=(h>=1&&h<=9)?'pm':'am';
-  let H=h%12+(ap==='pm'?12:0);
+  const H=h%12+(ap==='pm'?12:0);
   const rest=raw.replace(m[0],'').trim();
   const t24=pad(H)+':'+pad(mi);
   return {text:h12(t24)+(rest?' '+rest:''),t24};
 }
+const toMin=t=>/^\d\d:\d\d$/.test(t||'')?(+t.slice(0,2))*60+(+t.slice(3)):null;
+// When a car line is busy: from its start for its hours (5 hrs if not given; a getaway-only car from 30 min before the getaway).
+function lineWindow(job,l){const s=toMin(l.start);if(s==null)return null;return [s,s+Math.round((l.hours||5)*60)]}
+const overlaps=(a,b)=>a&&b&&a[0]<b[1]&&b[0]<a[1];
+function busyLines(date,exceptJobId){return S.jobs.filter(j=>j.date===date&&j.id!==exceptJobId).flatMap(j=>j.lines.map(l=>({l,j,win:lineWindow(j,l)})))}
 function parseRunSheet(text){
   const warns=[];const job={id:uid(),client:'',date:'',groom:{},bride:{},ceremony:{},photos:{},reception:{},getaway:{},note:'',lines:[]};
-  let sec=null;
-  for(let raw of text.split(/\r?\n/)){
+  let sec=null;const raws=[];
+  for(const raw of text.split(/\r?\n/)){
     const line=raw.replace(/\s+/g,' ').trim(); if(!line)continue;
     let m;
     if((m=line.match(/^(\d+)\s*x\s+(.+?)\s+-\s+(.+)$/i))){
-      let left=m[2],right=m[3],hours=null,task='',note='';
+      let left=m[2],right=m[3],hours=null;
       const hm=left.match(/@\s*(\d+(?:\.\d+)?)\s*h(?:ou)?rs?/i); if(hm){hours=+hm[1];left=left.replace(hm[0],' ')}
       const tm=left.match(/\(([^)]*)\)/g)||[]; const parens=tm.map(x=>x.slice(1,-1).trim()); tm.forEach(x=>left=left.replace(x,' '));
       const dot=left.split('·'); left=dot[0]; const after=dot.slice(1).join(' ').trim();
-      task=[after,...parens].filter(Boolean).join(' · ');
-      const rn=right.match(/^([^(]+?)\s*(?:\((.*)\))?$/); const who=rn?rn[1]:right; note=rn&&rn[2]?rn[2]:'';
-      const carName=left.replace(/\s+/g,' ').trim();
-      const line={carText:carName,carId:matchCar(carName),hours,task,driverText:who.trim(),wid:matchWorker(who),note};
-      if(!line.carId) warns.push(`I don't recognise the car "${carName}". Pick it below.`);
-      if(!line.wid) warns.push(`I don't recognise the driver "${who.trim()}". Pick them below.`);
-      job.lines.push(line); sec=null; continue;
+      // "Getaway - Paolo": everything before the last " - " is the task, the last part is the driver(s)
+      const parts=right.split(/\s+-\s+/); let who=parts.pop(); const extra=parts.join(' · ');
+      const rn=who.match(/^([^(]+?)\s*(?:\((.*)\))?$/); const note=rn&&rn[2]?rn[2]:''; who=(rn?rn[1]:who).trim();
+      const task=[after,extra,...parens].filter(Boolean).join(' · ');
+      const drivers=who.split(/\s*&\s*|\s*,\s*|\s+and\s+/i).filter(Boolean);
+      const n=Math.max(+m[1]||1,drivers.length);
+      const carText=left.replace(/\s+/g,' ').trim().replace(/\b(ghost|maybach|wagon|limo|dawn|phantom|urus)s\b/ig,'$1');
+      for(let i=0;i<n;i++) raws.push({carText,hours,task,note,driverText:drivers[i]||drivers[0]||''});
+      sec=null; continue;
     }
     if((m=line.match(/^client\s*:\s*(.*)$/i))){job.client=m[1];continue}
     if((m=line.match(/^date\s*:\s*(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})/i))){let y=+m[3];if(y<100)y+=2000;job.date=y+'-'+pad(+m[2])+'-'+pad(+m[1]);continue}
     if((m=line.match(/^(groom|bride)\s*:\s*(.*)$/i))){sec=m[1].toLowerCase();job[sec].name=m[2];continue}
-    if((m=line.match(/^(ceremony|photos|getaway)\s*:?\s*$/i))){sec=m[1].toLowerCase();continue}
+    if((m=line.match(/^(ceremony|photos|getaway)\s*:?\s*(.*)$/i))&&!/^(ceremony|photos|getaway)\s+\w+\s*:/i.test(line)){sec=m[1].toLowerCase();if(m[2])job[sec][sec==='getaway'?'car':'location']=m[2];continue}
     if((m=line.match(/^reception\s*:?\s*(.*)$/i))){sec='reception';job.reception.venue=m[1];continue}
     if((m=line.match(/^note\s*:\s*(.*)$/i))){job.note=(job.note?job.note+' ':'')+m[1];continue}
     if(sec&&(m=line.match(/^([a-z ]+?)\s*:\s*(.*)$/i))){
@@ -303,24 +372,47 @@ function parseRunSheet(text){
       else if(/cars?/.test(k))o.cars=v; else if(/destination/.test(k))o.destination=v; else o[k]=v;
       continue;
     }
+    if(/^g class run sheet$/i.test(line))continue;
     job.note=(job.note?job.note+' ':'')+line;
   }
+  if(!job.client&&(job.bride.name||job.groom.name)) job.client=[job.bride.name,job.groom.name].filter(Boolean).join(' & ');
+  const start=[job.groom.t24,job.bride.t24].filter(Boolean).sort()[0]||'';
+  // Give each line a start time, then pick an actual car: same model, not already used in this job, free at that time.
+  const busy=job.date?busyLines(job.date,job.id):[];
+  raws.forEach(r=>{
+    const l={...r,carId:'',wid:matchWorker(r.driverText)};
+    const getawayOnly=/getaway/i.test(r.task)&&!r.hours;
+    if(getawayOnly&&job.getaway.t24){const g=toMin(job.getaway.t24)-30;l.start=pad(Math.floor(g/60))+':'+pad(g%60);l.hours=null}
+    else l.start=start;
+    const win=getawayOnly?(l.start?[toMin(l.start),toMin(l.start)+60]:null):lineWindow(job,l);
+    const cands=carCandidates(r.carText);
+    const sameCarSameDriver=job.lines.find(x=>x.wid&&x.wid===l.wid&&cands.includes(x.carId));
+    const used=job.lines.map(x=>x.carId);
+    l.carId=(sameCarSameDriver&&sameCarSameDriver.carId)||cands.find(id=>!used.includes(id)&&!busy.some(b=>b.l.carId===id&&overlaps(b.win,win)))||cands.find(id=>!used.includes(id))||cands[0]||'';
+    if(!l.carId) warns.push(`I don't recognise the car "${r.carText}". Pick it below.`);
+    if(!l.wid) warns.push(`I don't recognise the driver "${r.driverText||'(none)'}". Pick them below.`);
+    job.lines.push(l);
+  });
+  // each car starts at its own pickup (bride cars at the bride's time, groom cars at the groom's)
+  job.lines.forEach(l=>{if(/getaway/i.test(l.task)&&!l.hours)return;const p=pickupFor(job,l);if(p&&p[1].t24)l.start=p[1].t24});
   if(!job.date) warns.push('No date found. Add a line like "Date : 29/11/26".');
   if(!job.client) warns.push('No client name found.');
   if(!job.lines.length) warns.push('No cars found. Car lines look like "1x RR Ghost @2 Hours - Adem".');
-  const start=[job.groom.t24,job.bride.t24].filter(Boolean).sort()[0]||'';
-  job.lines.forEach(l=>{l.start=l.start||start});
   return {job,warns};
 }
+function lineWin(job,l){if(/getaway/i.test(l.task)&&!l.hours){const s=toMin(l.start);return s==null?null:[s,s+60]}return lineWindow(job,l)}
 function jobWarnings(job){
-  const w=[];
+  const w=[];const busy=busyLines(job.date,job.id);
   job.lines.forEach(l=>{
+    const win=lineWin(job,l);
     if(l.wid&&S.avail[l.wid+'|'+job.date]==='no') w.push(`${W(l.wid).name} marked ${fmtDay(job.date)} as Off.`);
-    const clash=S.jobs.find(j=>j.id!==job.id&&j.date===job.date&&j.lines.some(x=>x.carId&&x.carId===l.carId));
-    if(clash) w.push(`${C(l.carId).name} is already on ${clash.client}'s job that day.`);
+    const cc=busy.find(b=>l.carId&&b.l.carId===l.carId&&overlaps(b.win,win));
+    if(cc) w.push(`${C(l.carId).name} is also on ${cc.j.client}'s job from ${h12(cc.l.start)}.`);
+    const dc=busy.find(b=>l.wid&&b.l.wid===l.wid&&overlaps(b.win,win));
+    if(dc) w.push(`${W(l.wid).name} is also driving for ${dc.j.client} from ${h12(dc.l.start)}.`);
   });
-  const seen={};job.lines.forEach(l=>{if(l.wid){if(seen[l.wid])w.push(`${W(l.wid).name} is on two cars in this job.`);seen[l.wid]=1}});
-  return w;
+  const seen={};job.lines.forEach(l=>{if(l.wid){if(seen[l.wid]&&seen[l.wid]!==l.carId)w.push(`${W(l.wid).name} is on two different cars in this job.`);seen[l.wid]=l.carId}});
+  return [...new Set(w)];
 }
 function runSheetText(j){
   const L=[];L.push('G Class Run Sheet','');
@@ -409,35 +501,135 @@ GETAWAY
 Time: 11pm Arrival
 Destination: The Star Casino Hotel`;
 
+const SAMPLE2=`G Class Run Sheet
+
+1x Ferrari 812 - AS
+1x RR Dawn @6 Hours - Paolo
+2x RR Ghosts @6 Hours - George & Adem
+2x Maybachs @6 Hours - Huss & Dean
+
+1x Rolls-Royce Dawn - Getaway - Paolo
+
+Date : 29/11/26
+
+GROOM: Jordan
+Address: 30 Mountview Ave, Beverly Hills
+Time: 12:30pm
+Cars: Ferrari, 2x Maybachs , 1x Ghost (George - going to brides)
+
+BRIDE: Tori
+Address: 1/71 Lincoln St, Belfield
+Time: 1:15pm
+Cars: RR Dawn, 1x Ghost (Adem)
+
+Ceremony
+Time: 2pm
+Location: St Joseph's Maronite Catholic Church
+Address: 7 Acton St, Croydon
+
+PHOTOS
+Time: straight after church
+Location: Elizabeth Bay House
+
+Reception: The Grounds of The Eveleigh
+Arrival Time: 5:15pm
+
+
+Getaway: RR Dawn
+Time: 11:15pm ARRIVE
+Destination: The Crown Sydney`;
+
+// Real drivers named on run sheets, then sample drivers to reach the real team size (45).
+const REAL_DRIVERS=['Sammy','Michael I','Oussaama B','Adem','AS','Paolo','George','Huss','Dean'];
+const SAMPLE_DRIVERS=['Ali H','Bilal R','Chris M','Daniel K','Elias T','Fadi S','Hassan A','Jad M','Jason P','Joe B','Karim N','Khaled F','Leo D','Marco V','Mark T','Mo A','Nick P','Omar Z','Peter G','Rami K','Rob S','Sam W','Sami E','Steve L','Tony C','Wassim J','Youssef H','Zac R','Charbel M','Anthony F','Jimmy N','Luke B','Ryan O','Ziad A','Ben K'];
+// The fleet as listed on gclasshiresydney.com/fleet (23), plus extra units of models the business runs several of, to make 32.
+const REAL_CARS=[['RR Phantom VIII','PH'],['RR Ghost III','GH3'],['RR Ghost II','GH2'],['RR Cullinan II','CU2'],['RR Cullinan I','CU1'],['RR Dawn','DW'],
+  ['G63 G-Wagon','G63'],['Maybach GLS','MB1'],['V-Class','VC1'],['Revuelto (Black)','RVB'],['Revuelto (White)','RVW'],['Aventador','AV'],['Urus','UR1'],
+  ['Ferrari 812 Superfast','F8'],['McLaren 720S','MC'],['Porsche 911 GT3 RS','GT3'],['Austin Princess (Vintage)','AP'],['Mercedes 220SE (Classic)','220'],
+  ['Shelby Mustang Eleanor','EL'],['Fast 9 Dodge Charger','DC'],['Chrysler Limo S2','LM2'],['Hummer Limo','HL1'],['Harley-Davidson','HD1']];
+const SAMPLE_CARS=[['Chrysler Limo S1','LM1'],['Chrysler Limo S3','LM3'],['Maybach GLS 2','MB2'],['G63 G-Wagon (White)','G62'],['G63 G-Wagon (Black)','G6B'],['Urus 2','UR2'],['V-Class 2','VC2'],['Hummer Limo 2','HL2'],['Harley-Davidson 2','HD2']];
+// Deterministic pseudo-random so every phone sees the same sample weekend.
+function rng(seed){return()=>{seed=(seed*1664525+1013904223)%4294967296;return seed/4294967296}}
+const pick=(r,a)=>a[Math.floor(r()*a.length)];
+const SUBURBS=['Bankstown','Greenacre','Punchbowl','Liverpool','Parramatta','Castle Hill','Kellyville','Bella Vista','Chatswood','Maroubra','Five Dock','Concord','Bexley','Hurstville','Strathfield','Ryde','Lakemba','Merrylands','Earlwood','Kogarah','Rouse Hill','Hoxton Park','Revesby','Drummoyne'];
+const STREETS=['George St','Hume Hwy','Victoria Rd','King St','Rose St','Kent St','Park Rd','Bay St','Church St','Railway Pde','Fairmount St','Cooper Rd','Chapel Rd','Wattle St'];
+const CHURCHES=[["St Mary's Cathedral","St Marys Rd, Sydney"],["Our Lady of Lebanon Co-Cathedral","40 Alice St, Harris Park"],["St Charbel's Monastery","142 Highclere Ave, Punchbowl"],["St Patrick's Church Hill","20 Grosvenor St, The Rocks"],["St Joseph's Maronite Church","7 Acton St, Croydon"],["St Raphael, Nicholas & Irene Greek Orthodox","2 Barker Ave, Kingsgrove"],["Holy Spirit Church","4 Pittwater Rd, North Ryde"],["St Francis Xavier's","Mount St, North Sydney"]];
+const RECEPTIONS=['Doltone House Darling Island','Le Montage, Lilyfield','Waterview, Bicentennial Park','Curzon Hall, Marsfield','Dockside, Darling Harbour','Gunners Barracks, Mosman','The Grounds of Alexandria','Taronga Centre','Fiorentino, Bexley','Oatlands House'];
+const PHOTOS=["Observatory Hill","Mrs Macquarie's Chair","Centennial Park","Elizabeth Bay House","Barangaroo Reserve","Royal Botanic Garden","Paddington Reservoir Gardens"];
+const BRIDES=['Layla','Maya','Sarah','Nour','Christina','Jessica','Mariam','Tania','Elena','Rita','Hannah','Sophie','Dana','Clara','Yasmin','Natalie','Grace','Lara'];
+const GROOMS=['Marcus','Elie','Joseph','Daniel','Michael','Ryan','Tarek','Andrew','James','Fadi','Nathan','Peter','Samir','George','Lucas','Adam','Chris','Rami'];
+const MODELS=[/ghost/i,/ghost/i,/cullinan/i,/cullinan/i,/phantom/i,/maybach/i,/g63/i,/g63/i,/urus/i,/chrysler/i,/chrysler/i,/dawn/i,/revuelto/i,/v-class/i,/hummer/i,/austin|220se/i,/eleanor|charger/i,/ferrari|mclaren|aventador/i];
+
 function seed(){
-  const workers=[
-    {id:'w0',name:'Ahmed K',pin:'0000',role:'owner'},
-    {id:'w1',name:'Sammy',pin:'1111',role:'driver'},
-    {id:'w2',name:'Michael I',pin:'2222',role:'driver'},
-    {id:'w3',name:'Oussaama B',pin:'3333',role:'driver'},
-    {id:'w4',name:'Adem',pin:'4444',role:'driver'}];
-  const cars=[
-    {id:'c1',name:'RR Cullinan',code:'RR',rego:'Rego TBC'},
-    {id:'c2',name:'Chrysler Limo S2',code:'LM',rego:'Rego TBC'},
-    {id:'c3',name:'Urus',code:'UR',rego:'Rego TBC'},
-    {id:'c4',name:'RR Ghost',code:'GH',rego:'Rego TBC'},
-    {id:'c5',name:'G Wagon',code:'G',rego:'Rego TBC'}];
+  const workers=[{id:'w0',name:'Ahmed K',pin:'0000',role:'owner'},
+    ...REAL_DRIVERS.map((n,i)=>({id:'w'+(i+1),name:n,pin:String(1111*(i+1)).slice(-4).padStart(4,'0'),role:'driver'})),
+    ...SAMPLE_DRIVERS.map((n,i)=>({id:'s'+i,name:n,pin:'9999',role:'driver',sample:true}))];
+  // first four keep the PINs from the earlier demo
+  ['1111','2222','3333','4444','5555','6666','7777','8888','9090'].forEach((p,i)=>workers[i+1].pin=p);
+  const cars=[...REAL_CARS.map(([n,c],i)=>({id:'c'+i,name:n,code:c,rego:'Rego TBC'})),...SAMPLE_CARS.map(([n,c],i)=>({id:'x'+i,name:n,code:c,rego:'Rego TBC',sample:true}))];
   S={workers,cars,avail:{},jobs:[],trips:[],notes:[],chats:{},seen:{}};
-  const {job}=parseRunSheet(SAMPLE); S.jobs.push(job);
-  job.lines.forEach(l=>{if(l.wid)S.avail[l.wid+'|'+job.date]='yes'});
-  notify(job,'new');
+  // Availability for the next 14 days: sample drivers mostly free on weekends.
+  const r=rng(7);const t0=today();
+  workers.filter(w=>w.sample).forEach(w=>{for(let i=0;i<14;i++){const d=addDays(t0,i),wk=d.getDay()===0||d.getDay()===6;const x=r();
+    if(x<(wk?.82:.45))S.avail[w.id+'|'+iso(d)]='yes';else if(x<(wk?.9:.75))S.avail[w.id+'|'+iso(d)]='no'}});
+  // The two real run sheets (Sunday 29 Nov)
+  [SAMPLE,SAMPLE2].forEach(txt=>{const {job}=parseRunSheet(txt);S.jobs.push(job);job.lines.forEach(l=>{if(l.wid)S.avail[l.wid+'|'+job.date]='yes'});notify(job,'new')});
+  // Example jobs to make Sat 28 and Sun 29 look like a real weekend (about 10 a day)
+  // Dummy jobs for the next 4 weeks: about 10 a day on weekends, a few on weekdays.
+  const rr=rng(42);
+  for(let i=0;i<28;i++){const d=addDays(t0,i),date=iso(d),dow=d.getDay();
+    const real=S.jobs.filter(j=>j.date===date).length;
+    const target=dow===6||dow===0?9+Math.floor(rr()*3):dow===5?1+Math.floor(rr()*3):Math.floor(rr()*3);
+    for(let k=0;k<Math.max(0,target-real);k++) S.jobs.push(exampleJob(date,k,rng(1000+i*31+k)));}
   return S;
+}
+function exampleJob(date,k,r){
+  const formal=r()<.18;
+  const startH=formal?17+Math.floor(r()*2):9+Math.floor(r()*7);const startM=pick(r,['00','15','30','45']);
+  const start=pad(startH)+':'+startM;const sMin=toMin(start);
+  const fmt=m=>pad(Math.floor(m/60)%24)+':'+pad(m%60);
+  const bride=pick(r,BRIDES),groom=pick(r,GROOMS);
+  const nCars=formal?1:1+Math.floor(r()*3)+(r()<.3?1:0);
+  const job={id:uid(),example:true,date,client:formal?`${bride} (Year 12 formal)`:`${bride} & ${groom}`,groom:{},bride:{},ceremony:{},photos:{},reception:{},getaway:{},note:'',lines:[]};
+  const addr=()=>`${1+Math.floor(r()*120)} ${pick(r,STREETS)}, ${pick(r,SUBURBS)}`;
+  job.bride={name:bride,address:addr(),time:h12(start),t24:start};
+  if(!formal){const gt=fmt(sMin-30);job.groom={name:groom,address:addr(),time:h12(gt),t24:gt};
+    const ch=pick(r,CHURCHES);const ct=fmt(sMin+75);job.ceremony={location:ch[0],address:ch[1],time:h12(ct),t24:ct};
+    job.photos={location:pick(r,PHOTOS),time:'straight after church'};const rt=fmt(sMin+330);job.reception={venue:pick(r,RECEPTIONS),time:h12(rt),t24:rt};
+    if(r()<.4){const g=fmt(sMin+690);job.getaway={time:h12(g)+' arrive',t24:g,destination:pick(r,['The Crown Sydney','Shangri-La Sydney','Park Hyatt','InterContinental Double Bay','The Star Grand'])}}}
+  else {job.reception={venue:pick(r,RECEPTIONS),time:h12(fmt(sMin+60)),t24:fmt(sMin+60)}}
+  const busy=busyLines(date,job.id);const used=[];const usedW=[];
+  const freeCar=(model,win)=>S.cars.filter(c=>model.test(c.name)&&!used.includes(c.id)&&!busy.some(b=>b.l.carId===c.id&&overlaps(b.win,win)));
+  const freeDriver=win=>{const ws=S.workers.filter(w=>w.role!=='owner'&&!usedW.includes(w.id)&&S.avail[w.id+'|'+date]!=='no'&&!busy.some(b=>b.l.wid===w.id&&overlaps(b.win,win)));
+    const pref=ws.filter(w=>S.avail[w.id+'|'+date]==='yes');return (pref.length?pick(r,pref):ws.length?pick(r,ws):null)};
+  const groomCars=[],brideCars=[];
+  for(let i=0;i<nCars;i++){
+    const hours=formal?3:pick(r,[2,3,5,6,6]);const st=(!formal&&i%2===1)?job.groom.t24:start;const win=[toMin(st),toMin(st)+hours*60];
+    let car=null;for(let tries=0;tries<12&&!car;tries++){car=freeCar(pick(r,MODELS),win)[0]||null}
+    if(!car)continue;const w=freeDriver(win);used.push(car.id);if(w)usedW.push(w.id);
+    const line={carText:car.name,carId:car.id,wid:w?w.id:'',driverText:w?w.name:'',hours,task:formal?'Formal':(hours<=3?((i%2)?'Groom to church':'Bride to church'):''),note:'',start:st};
+    job.lines.push(line);(i%2&&!formal?groomCars:brideCars).push(car.name.replace(/ (\d+|I+|VIII|\(.*\))$/,''));
+    busy.push({l:line,j:job,win});
+  }
+  job.bride.cars=brideCars.join(' & ');if(!formal)job.groom.cars=groomCars.join(' & ');
+  job.lines.forEach(l=>{if(l.wid&&!S.avail[l.wid+'|'+date])S.avail[l.wid+'|'+date]='yes'});
+  return job;
 }
 let S;
 
 /* ---------- Pickup matching, notifications, chat ---------- */
-function carTokenMatch(tok,carId){const c=C(carId),T=tok.trim().toLowerCase();if(!T||!carId)return false;
+// "1x Ghost (Adem)" in a Cars: line means the Ghost that Adem drives.
+function carTokenMatch(tok,l){const c=C(l.carId);if(!l.carId)return false;
+  let T=tok.trim().replace(/^\d+\s*x\s*/i,'');const par=(T.match(/\(([^)]*)\)/)||[])[1]||'';T=T.replace(/\(.*\)/,'').trim().toLowerCase();if(!T)return false;
+  if(par){const who=W(l.wid).name.toLowerCase().split(' ')[0];const named=S.workers.some(w=>par.toLowerCase().includes(w.name.toLowerCase().split(' ')[0])&&w.name.length>2);
+    if(named&&!par.toLowerCase().includes(who))return false}
   if(T==='rr'||T==='rolls')return /^rr\b|rolls/i.test(c.name);
   if(T==='g'||T==='g wagon'||T==='gwagon')return /g\s*-?\s*wagon/i.test(c.name);
-  return T.length>2&&(matchCar(tok)===carId||c.name.toLowerCase().includes(T))}
+  return T.length>2&&(carCandidates(T).includes(l.carId)||c.name.toLowerCase().includes(T))}
 function pickupFor(job,l){const t=(l.task||'').toLowerCase();
   if(/groom/.test(t))return ['Groom',job.groom]; if(/bride/.test(t))return ['Bride',job.bride];
-  for(const k of ['bride','groom']){const toks=(job[k].cars||'').split(/&|,|\+|\band\b/i);if(toks.some(x=>carTokenMatch(x,l.carId)))return [k==='groom'?'Groom':'Bride',job[k]]}
+  for(const k of ['bride','groom']){const toks=(job[k].cars||'').split(/&|,|\+|\band\b/i);if(toks.some(x=>carTokenMatch(x,l)))return [k==='groom'?'Groom':'Bride',job[k]]}
+  if(/getaway/.test(t)&&job.getaway.destination)return ['Getaway',{time:job.getaway.time,address:'Reception: '+(job.reception.venue||'')+' → '+job.getaway.destination}];
   return null}
 function members(job){return [...new Set([...S.workers.filter(w=>w.role==='owner').map(w=>w.id),...job.lines.map(l=>l.wid).filter(Boolean)])]}
 function notify(job,kind){
@@ -492,6 +684,7 @@ const ICON={
  today:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17h14l-1.5-6.5A2 2 0 0 0 15.6 9H8.4a2 2 0 0 0-1.9 1.5Z"/><circle cx="8" cy="17" r="2"/><circle cx="16" cy="17" r="2"/></svg>',
  avail:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
  shifts:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>',
+ cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M7 14h2M11 14h2M15 14h2M7 18h2M11 18h2"/></svg>',
  roster:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>',
  fleet:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21V8l8-5 8 5v13"/><path d="M8 21v-6h8v6"/></svg>',
  log:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3"/></svg>',
@@ -501,9 +694,9 @@ function render(){
   const app=document.getElementById('app');
   if(!me){app.innerHTML=loginView();bindLogin();return}
   const owner=me.role==='owner';
-  const tabs=owner?[['today','Today'],['roster','Jobs'],['fleet','Cars'],['log','Photos'],['staff','Staff']]:[['today','Today'],['avail','Availability'],['shifts','My jobs']];
+  const tabs=owner?[['today','Today'],['roster','Jobs'],['cal','Calendar'],['fleet','Cars'],['log','Photos'],['staff','Staff']]:[['today','Today'],['avail','Availability'],['shifts','My jobs']];
   if(!tabs.some(t=>t[0]===tab)) tab=tabs[0][0];
-  const body={today:todayView,avail:availView,shifts:shiftsView,roster:rosterView,fleet:fleetView,log:logView,staff:staffView}[tab]();
+  const body={cal:calView,today:todayView,avail:availView,shifts:shiftsView,roster:rosterView,fleet:fleetView,log:logView,staff:staffView}[tab]();
   app.innerHTML=`
   <header class="top"><div class="wrap ${owner?'wide':''}">
     <div class="avatar">${esc(initials(me.name))}</div>
@@ -525,15 +718,20 @@ function loginView(){
    <p>Run sheets, availability and car sign-out in one place.</p></div>
    <div class="card">
      <span class="eyebrow">Who's signing in?</span>
-     <div class="who">${S.workers.map(w=>`<button data-w="${w.id}" aria-pressed="${loginPick===w.id}"><div class="row"><div class="avatar">${esc(initials(w.name))}</div></div><b>${esc(w.name)}</b><span class="muted" style="font-size:.78rem">${w.role==='owner'?'Owner':'Chauffeur'}</span></button>`).join('')}</div>
+     <input type="search" class="search" placeholder="Search your name" data-filter="#wholist" aria-label="Search your name" id="whoq">
+     <div class="who-list" id="wholist">${S.workers.map(w=>`<button data-w="${w.id}" data-q="${esc(w.name.toLowerCase())}" aria-pressed="${loginPick===w.id}"><div class="avatar">${esc(initials(w.name))}</div><b>${esc(w.name)}</b><span class="muted">${w.role==='owner'?'Owner':w.sample?'Sample driver':'Chauffeur'}</span></button>`).join('')}</div>
      <form id="pinform" class="pin" ${loginPick?'':'hidden'}>
        <input id="pinin" type="password" inputmode="numeric" maxlength="4" placeholder="PIN" autocomplete="off" aria-label="4-digit PIN">
        <button class="btn primary" type="submit">Sign in</button>
      </form>
-     <div class="banner">Prototype: demo PINs are 0000 for Ahmed K (owner), then 1111 Sammy, 2222 Michael I, 3333 Oussaama B, 4444 Adem. Data is saved on this device only.</div>
+     <div class="banner">Demo: PINs are 0000 Ahmed K (owner), 1111 Sammy, 2222 Michael I, 3333 Oussaama B, 4444 Adem, 5555 AS, 6666 Paolo, 7777 George, 8888 Huss, 9090 Dean. Sample drivers use 9999. Data is saved on this device only.</div>
    </div></div></div>`;
 }
+function bindFilters(){document.querySelectorAll('[data-filter]').forEach(inp=>inp.oninput=()=>{const q=inp.value.trim().toLowerCase();const box=document.querySelector(inp.dataset.filter);if(!box)return;
+  box.querySelectorAll('[data-q]').forEach(el=>{if(el.classList.contains('dayhead'))return;el.hidden=!!q&&!el.dataset.q.includes(q)});
+  box.querySelectorAll('.dayhead').forEach(h=>{let n=h.nextElementSibling,any=false;while(n&&!n.classList.contains('dayhead')){if(!n.hidden)any=true;n=n.nextElementSibling}h.hidden=!any})})}
 function bindLogin(){
+  bindFilters();
   document.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{loginPick=b.dataset.w;render();setTimeout(()=>document.getElementById('pinin')?.focus(),0)});
   const f=document.getElementById('pinform'); if(f) f.onsubmit=e=>{e.preventDefault();const w=W(loginPick);
     if(document.getElementById('pinin').value===w.pin){me=w;tab='today';loginPick=null;render()} else toast('That PIN doesn\'t match. Try again.')};
@@ -564,7 +762,8 @@ function todayView(){
   } else {
     const suggested=mine[0]?.carId;
     html+=`<div class="card"><span class="eyebrow">Sign a car out</span><p class="muted" style="margin:0">Pick the car you're taking. Cars already out are greyed.</p>
-     <div class="cars">${S.cars.map(c=>{const o=openTrip(c.id);return `<button class="car" data-act="pickcar" data-car="${c.id}" ${o?'disabled':''}>${sw(c.id)}<div class="meta"><b>${esc(c.name)}</b><span class="mono muted">${esc(c.rego)}</span></div>${o?`<span class="pill no">Out · ${esc(W(o.wid).name.split(' ')[0])}</span>`:c.id===suggested?'<span class="pill acc">Your car today</span>':'<span class="pill ok">Available</span>'}</button>`}).join('')}</div></div>`;
+     <input type="search" class="search" placeholder="Search ${S.cars.length} cars" data-filter="#carlist" aria-label="Search cars">
+     <div class="cars" id="carlist">${[...S.cars].sort((a,b)=>(b.id===suggested)-(a.id===suggested)||(!!openTrip(a.id))-(!!openTrip(b.id))).map(c=>{const o=openTrip(c.id);return `<button class="car" data-q="${esc((c.name+' '+c.rego).toLowerCase())}" data-act="pickcar" data-car="${c.id}" ${o?'disabled':''}>${sw(c.id)}<div class="meta"><b>${esc(c.name)}</b><span class="mono muted">${esc(c.rego)}</span></div>${o?`<span class="pill no">Out · ${esc(W(o.wid).name.split(' ')[0])}</span>`:c.id===suggested?'<span class="pill acc">Your car today</span>':'<span class="pill ok">Available</span>'}</button>`}).join('')}</div></div>`;
   }
   const next=myShifts().filter(s=>s.date>t).sort((a,b)=>a.date.localeCompare(b.date))[0];
   if(next) html+=`<div><span class="eyebrow">Next job</span></div>`+myLineCard(next);
@@ -606,14 +805,14 @@ function jobSheet(){
   const j=J(viewJob); if(!j) return '';
   const owner=me.role==='owner'; const warns=owner?jobWarnings(j):[];
   return `<div class="sheet" id="sheetbg"><div class="panel" role="dialog" aria-modal="true" aria-label="Run sheet">
-   <div class="row"><div><span class="eyebrow">Run sheet · ${fmtDay(j.date)}</span><h2>${esc(j.client||'Untitled job')}</h2></div><div class="spacer"></div><button class="btn ghost" data-act="close" aria-label="Close">✕</button></div>
+   <div class="row"><div><span class="eyebrow">Run sheet · ${fmtDay(j.date)}</span><h2>${esc(j.client||'Untitled job')}</h2>${j.example?'<span class="pill n">Example job</span>':''}</div><div class="spacer"></div><button class="btn ghost" data-act="close" aria-label="Close">✕</button></div>
    ${warns.length?`<div class="warns">${warns.map(w=>`<div class="warn-row">${esc(w)}</div>`).join('')}</div>`:''}
    <div class="lineup">${j.lines.map(l=>{const fin=addHours(l.start,l.hours);return `<div class="lu ${l.wid===me.id?'me':''}">${sw(l.carId)}<div class="body"><b>${esc(C(l.carId).name||l.carText)}</b>${l.wid===me.id?' <span class="pill acc">You</span>':''}<div class="muted" style="font-size:.82rem">${esc(l.wid?W(l.wid).name:l.driverText)}${l.hours?' · '+l.hours+' hrs':''}${l.task?' · '+esc(l.task):''}${fin?' · done ~'+h12(fin):''}</div>${(()=>{const p=pickupFor(j,l);return p?`<div style="font-size:.82rem">${p[0]} pickup ${esc(p[1].time||'')}</div>`:''})()}${l.note?`<div style="font-size:.82rem;color:var(--warn);font-weight:700">${esc(l.note)}</div>`:''}</div></div>`}).join('')}</div>
    <div class="card rs">
     ${rsSec('Groom',[['',j.groom.name],['',j.groom.address],['Pickup',j.groom.time,'t'],['Cars',j.groom.cars]])}
     ${rsSec('Bride',[['',j.bride.name],['',j.bride.address],['Pickup',j.bride.time,'t'],['Cars',j.bride.cars]])}
     ${rsSec('Ceremony',[['',j.ceremony.location],['',j.ceremony.address!==j.ceremony.location?j.ceremony.address:''],['Time',j.ceremony.time,'t']])}
-    ${rsSec('Photos',[['',j.photos.address],['Time',j.photos.time]])}
+    ${rsSec('Photos',[['',j.photos.location],['',j.photos.address],['Time',j.photos.time]])}
     ${rsSec('Reception',[['',j.reception.venue],['Arrive',j.reception.time,'t']])}
     ${rsSec('Getaway',[['',j.getaway.destination],['Time',j.getaway.time,'t']])}
     ${rsSec('Note',[['',j.note]])}
@@ -630,8 +829,8 @@ function pasteSheet(){
     <div><b>${esc(job.client||'No client')}</b> · ${job.date?fmtDay(job.date):'<span style="color:var(--no)">no date</span>'}</div>
     ${all.length?`<div class="warns">${all.map(w=>`<div class="warn-row">${esc(w)}</div>`).join('')}</div>`:'<div class="pill ok">Everything matched</div>'}
     ${job.lines.map((l,i)=>`<div class="edit-line"><div class="lbl">${esc(l.carText)}${l.task?' · '+esc(l.task):''}</div>
-      <label class="f">Car<select data-lc="${i}"><option value="">Choose car</option>${S.cars.map(c=>`<option value="${c.id}" ${l.carId===c.id?'selected':''}>${esc(c.name)}</option>`).join('')}</select></label>
-      <label class="f">Driver<select data-lw="${i}"><option value="">Choose driver</option>${S.workers.map(w=>{const v=S.avail[w.id+'|'+job.date];return `<option value="${w.id}" ${l.wid===w.id?'selected':''}>${esc(w.name)}${v==='yes'?' (free)':v==='no'?' (OFF)':''}</option>`}).join('')}</select></label>
+      <label class="f">Car<select data-lc="${i}"><option value="">Choose car</option>${(()=>{const win=lineWin(job,l),b=busyLines(job.date,job.id);return S.cars.map(c=>{const x=b.find(y=>y.l.carId===c.id&&overlaps(y.win,win));return `<option value="${c.id}" ${l.carId===c.id?'selected':''}>${esc(c.name)}${x?' (busy '+h12(x.l.start)+')':''}</option>`}).join('')})()}</select></label>
+      <label class="f">Driver<select data-lw="${i}"><option value="">Choose driver</option>${(()=>{const win=lineWin(job,l),b=busyLines(job.date,job.id);return S.workers.map(w=>{const v=S.avail[w.id+'|'+job.date];const x=b.find(y=>y.l.wid===w.id&&overlaps(y.win,win));return {w,v,x}}).sort((a,b)=>(a.x?1:0)-(b.x?1:0)||(a.v==='yes'?0:a.v?2:1)-(b.v==='yes'?0:b.v?2:1)).map(({w,v,x})=>`<option value="${w.id}" ${l.wid===w.id?'selected':''}>${esc(w.name)}${x?' (busy '+h12(x.l.start)+')':v==='yes'?' (free)':v==='no'?' (OFF)':''}</option>`).join('')})()}</select></label>
       <label class="f hrs">Hrs<input type="number" step="0.5" min="0" data-lh="${i}" value="${l.hours??''}"></label></div>`).join('')}
     <button class="btn primary block" data-act="savejob" ${job.date&&job.lines.length?'':'disabled'}>${p.editId?'Save & notify drivers of changes':'Save job & notify drivers'}</button></div>`})():'';
   return `<div class="sheet" id="sheetbg"><div class="panel" role="dialog" aria-modal="true" aria-label="Run sheet">
@@ -691,39 +890,90 @@ function confirmTrip(){
 }
 
 /* ---------- Owner: Jobs / roster ---------- */
+let jobsDay=null, rosterDay=null;
+function jobRow(j){const w=jobWarnings(j).length;const st=[j.groom.t24,j.bride.t24].filter(Boolean).sort()[0]||j.lines[0]?.start||'';
+  return `<button class="jobrow" data-job="${j.id}" data-q="${esc((j.client+' '+j.lines.map(l=>(C(l.carId).name||l.carText)+' '+(l.wid?W(l.wid).name:l.driverText)).join(' ')).toLowerCase())}">
+   <span class="mono jt">${esc(h12(st)||'TBC')}</span>
+   <span class="jb"><b>${esc(j.client||'Untitled')}</b>${j.example?' <span class="pill n">Example</span>':''}${w?` <span class="pill warn">${w} to check</span>`:''}
+   <span class="chips">${j.lines.map(l=>`<span class="chip" title="${esc(C(l.carId).name)}">${esc(C(l.carId).code||'?')}<i>${esc(l.wid?W(l.wid).name.split(' ')[0]:'No driver')}</i></span>`).join('')}</span></span></button>`}
 function rosterView(){
   const t=today(); const days=Array.from({length:14},(_,i)=>addDays(t,i)); const people=S.workers;
   const sh=shifts(); const out=S.trips.filter(x=>!x.inAt);
-  const in14=S.jobs.filter(j=>j.date>=iso(t)&&j.date<=iso(days[13]));
-  const unmarked=people.filter(w=>w.role!=='owner').reduce((n,w)=>n+days.filter(d=>!S.avail[w.id+'|'+iso(d)]).length,0);
-  return `<div class="row"><div><span class="eyebrow">Owner view · next 14 days</span><h2>Jobs &amp; roster</h2></div><div class="spacer"></div><button class="btn primary" data-act="newjob">+ New job</button></div>
+  const up=S.jobs.filter(j=>j.date>=iso(t)).sort((a,b)=>a.date.localeCompare(b.date));
+  const dates=[...new Set(up.map(j=>j.date))];
+  if(jobsDay&&!dates.includes(jobsDay))jobsDay=null;
+  const shown=jobsDay?up.filter(j=>j.date===jobsDay):up;
+  const byDate={};shown.forEach(j=>(byDate[j.date]=byDate[j.date]||[]).push(j));
+  const startOf=j=>[j.groom.t24,j.bride.t24].filter(Boolean).sort()[0]||'';
+  const rd=rosterDay||dates[0]||iso(t);
+  const dayLines=sh.filter(s=>s.date===rd);
+  const carsBusy=new Set(dayLines.map(s=>s.carId)).size;
+  const driversBusy=new Set(dayLines.map(s=>s.wid).filter(Boolean)).size;
+  const freeDrivers=people.filter(w=>w.role!=='owner'&&S.avail[w.id+'|'+rd]==='yes'&&!dayLines.some(s=>s.wid===w.id)).length;
+  return `<div class="row"><div><span class="eyebrow">Owner view</span><h2>Jobs &amp; roster</h2></div><div class="spacer"></div><button class="btn primary" data-act="newjob">+ New job</button></div>
+  <div class="daytabs" role="tablist">${dates.slice(0,7).map(d=>{const n=up.filter(j=>j.date===d).length;return `<button data-rday="${d}" aria-pressed="${rd===d}"><b>${fmtDay(d).split(' ').slice(0,2).join(' ')}</b><span>${n} job${n===1?'':'s'}</span></button>`}).join('')}</div>
   <div class="stats">
-    <div class="stat"><span class="eyebrow">Jobs, 14 days</span><b>${in14.length}</b></div>
-    <div class="stat"><span class="eyebrow">Car bookings</span><b>${in14.reduce((n,j)=>n+j.lines.length,0)}</b></div>
-    <div class="stat"><span class="eyebrow">Cars out now</span><b>${out.length}/${S.cars.length}</b></div>
-    <div class="stat"><span class="eyebrow">Unmarked days</span><b style="color:${unmarked?'var(--warn)':'inherit'}">${unmarked}</b></div>
+    <div class="stat"><span class="eyebrow">Jobs ${fmtDay(rd).split(' ').slice(0,2).join(' ')}</span><b>${S.jobs.filter(j=>j.date===rd).length}</b></div>
+    <div class="stat"><span class="eyebrow">Cars booked</span><b>${carsBusy}<small>/${S.cars.length}</small></b></div>
+    <div class="stat"><span class="eyebrow">Drivers on</span><b>${driversBusy}<small>/${people.length-1}</small></b></div>
+    <div class="stat"><span class="eyebrow">Free, not booked</span><b>${freeDrivers}</b></div>
   </div>
   <div class="ownergrid">
-  <div class="card"><span class="eyebrow">Upcoming jobs</span><div class="list">${S.jobs.filter(j=>j.date>=iso(t)).sort((a,b)=>a.date.localeCompare(b.date)).map(j=>`<button class="li" data-job="${j.id}" style="background:none;border-left:0;border-right:0;border-bottom:0;text-align:left;cursor:pointer;width:100%"><div style="min-width:86px"><b>${fmtDay(j.date)}</b><div class="mono muted">${esc(j.groom.time||j.bride.time||'')}</div></div><div class="body"><b>${esc(j.client)}</b><div class="muted" style="font-size:.85rem">${j.lines.map(l=>esc((C(l.carId).name||l.carText)+' – '+(l.wid?W(l.wid).name:l.driverText||'?'))).join('<br>')}</div>${jobWarnings(j).length?`<span class="pill warn" style="margin-top:6px">${jobWarnings(j).length} to check</span>`:''}</div></button>`).join('')||'<p class="muted">No jobs booked. Tap New job and paste a run sheet.</p>'}</div></div>
-  <div class="card"><span class="eyebrow">Who's free</span>
-    <div class="scroll"><table class="roster"><thead><tr><th>Driver</th>${days.map(d=>`<th>${DOW[d.getDay()].slice(0,2)}<b>${d.getDate()}</b></th>`).join('')}</tr></thead>
-    <tbody>${people.map(w=>`<tr><td>${esc(w.name)}</td>${days.map(d=>{const k=iso(d),v=S.avail[w.id+'|'+k],s=sh.find(s=>s.wid===w.id&&s.date===k);
-      return `<td><button class="cell ${s?'sh':v||''}" ${s?`data-job="${s.job.id}"`:`data-cell="${w.id}|${k}"`} aria-label="${esc(w.name)} ${fmtDay(k)}">${s?esc(C(s.carId).code):v==='yes'?'✓':v==='no'?'✕':'·'}</button></td>`}).join('')}</tr>`).join('')}</tbody></table></div>
-    <div class="legend"><span><i style="background:var(--ok)"></i>Free</span><span><i style="background:var(--no)"></i>Off</span><span><i style="background:var(--accent)"></i>Booked (car)</span><span>· not marked</span></div>
+  <div class="card"><div class="row"><span class="eyebrow">Upcoming jobs</span><div class="spacer"></div>
+    <div class="seg"><button data-jday="" aria-pressed="${!jobsDay}">All</button>${dates.slice(0,4).map(d=>`<button data-jday="${d}" aria-pressed="${jobsDay===d}">${fmtDay(d).split(' ')[0]}</button>`).join('')}</div></div>
+    <input type="search" class="search" placeholder="Search client, car or driver" data-filter="#joblist" aria-label="Search jobs">
+    <div id="joblist">${Object.keys(byDate).sort().map(d=>`<div class="dayhead" data-q="">${fmtDay(d)} <span>${pl(byDate[d].length,'job')} · ${pl(byDate[d].reduce((n,j)=>n+j.lines.length,0),'car')}</span></div>`+byDate[d].sort((a,b)=>startOf(a).localeCompare(startOf(b))).map(jobRow).join('')).join('')||'<p class="muted">No jobs booked. Tap New job and paste a run sheet.</p>'}</div></div>
+  <div class="card"><div class="row"><span class="eyebrow">Who's free · next 14 days</span></div>
+    <input type="search" class="search" placeholder="Search ${people.length} drivers" data-filter="#rosterbody" aria-label="Search drivers">
+    <div class="scroll rosterwrap"><table class="roster"><thead><tr><th>Driver</th>${days.map(d=>{const k=iso(d);const f=people.filter(w=>S.avail[w.id+'|'+k]==='yes').length;return `<th>${DOW[d.getDay()].slice(0,2)}<b>${d.getDate()}</b><em>${f} free</em></th>`}).join('')}</tr></thead>
+    <tbody id="rosterbody">${people.map(w=>`<tr data-q="${esc(w.name.toLowerCase())}"><td>${esc(w.name)}</td>${days.map(d=>{const k=iso(d),v=S.avail[w.id+'|'+k],ss=sh.filter(s=>s.wid===w.id&&s.date===k);
+      return `<td><button class="cell ${ss.length?'sh':v||''}" ${ss.length?`data-job="${ss[0].job.id}"`:`data-cell="${w.id}|${k}"`} aria-label="${esc(w.name)} ${fmtDay(k)}">${ss.length>1?ss.length+'×':ss.length?esc(C(ss[0].carId).code):v==='yes'?'✓':v==='no'?'✕':'·'}</button></td>`}).join('')}</tr>`).join('')}</tbody></table></div>
+    <div class="legend"><span><i style="background:var(--ok)"></i>Free</span><span><i style="background:var(--no)"></i>Off</span><span><i style="background:var(--accent)"></i>Booked (car, or 2× jobs)</span><span>· not marked</span></div>
   </div>
   </div>`;
 }
 
+
+/* ---------- Owner: month calendar ---------- */
+let calMonth=null, calDay=null;
+function calView(){
+  const t=today();if(!calMonth)calMonth=new Date(t.getFullYear(),t.getMonth(),1);
+  const y=calMonth.getFullYear(),m=calMonth.getMonth();const first=new Date(y,m,1);const lead=(first.getDay()+6)%7;const dim=new Date(y,m+1,0).getDate();
+  const byDate={};S.jobs.forEach(j=>{(byDate[j.date]=byDate[j.date]||[]).push(j)});
+  const max=Math.max(1,...Object.values(byDate).map(a=>a.length));
+  if(!calDay)calDay=iso(t);
+  let cells='';for(let i=0;i<lead;i++)cells+='<div></div>';
+  for(let d=1;d<=dim;d++){const k=y+'-'+pad(m+1)+'-'+pad(d);const js=byDate[k]||[];const cars=js.reduce((n,j)=>n+j.lines.length,0);const lvl=js.length?Math.ceil(js.length/max*4):0;
+    const warn=js.some(j=>jobWarnings(j).length);
+    cells+=`<button class="cal-d lvl${lvl} ${k===iso(t)?'today':''}" data-cday="${k}" aria-pressed="${calDay===k}" aria-label="${fmtDay(k)}: ${js.length} jobs"><span class="n">${d}</span>${js.length?`<b>${js.length}</b><i>${pl(cars,'car')}</i>`:''}${warn?'<em></em>':''}</button>`}
+  const dayJobs=(byDate[calDay]||[]).sort((a,b)=>([a.groom.t24,a.bride.t24].filter(Boolean).sort()[0]||'').localeCompare([b.groom.t24,b.bride.t24].filter(Boolean).sort()[0]||''));
+  const monthJobs=Object.entries(byDate).filter(([k])=>k.startsWith(y+'-'+pad(m+1))).reduce((n,[,a])=>n+a.length,0);
+  return `<div class="row"><div><span class="eyebrow">Calendar · ${monthJobs} jobs this month</span><h2>${['January','February','March','April','May','June','July','August','September','October','November','December'][m]} ${y}</h2></div><div class="spacer"></div>
+    <button class="btn" data-cal="-1" aria-label="Previous month">‹</button><button class="btn" data-cal="1" aria-label="Next month">›</button></div>
+  <div class="ownergrid">
+  <div class="card"><div class="cal">${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d=>`<div class="cal-h">${d}</div>`).join('')}${cells}</div>
+    <div class="legend"><span>Number = jobs that day</span><span><i style="background:var(--warn)"></i>Something to check</span></div></div>
+  <div class="card"><div class="row"><span class="eyebrow">${fmtDay(calDay)}</span><div class="spacer"></div><span class="muted" style="font-size:.8rem">${pl(dayJobs.length,'job')} · ${pl(dayJobs.reduce((n,j)=>n+j.lines.length,0),'car')}</span></div>
+    <div id="caljobs">${dayJobs.map(jobRow).join('')||'<p class="muted" style="margin:0">No jobs this day.</p>'}</div>
+    <button class="btn block" data-act="newjob">+ New job</button></div>
+  </div>`;
+}
+
 /* ---------- Owner: Fleet ---------- */
+let fleetFilter='all';
 function fleetView(){
-  const t=iso(today());
-  return `<div><span class="eyebrow">Fleet</span><h2>Cars</h2></div>
-  <div class="cars">${S.cars.map(c=>{const o=openTrip(c.id);const last=S.trips.filter(x=>x.carId===c.id&&x.inAt).slice(-1)[0];
-   const next=shifts().filter(s=>s.carId===c.id&&s.date>=t).sort((a,b)=>a.date.localeCompare(b.date))[0];
-   return `<div class="card"><div class="status">${sw(c.id)}<div style="flex:1;min-width:0"><b class="big" style="font-size:1.1rem">${esc(c.name)}</b><div class="mono muted">${esc(c.rego)} · ${lastOdo(c.id)||'–'} km</div></div>${o?'<span class="pill no">Out</span>':'<span class="pill ok">In garage</span>'}</div>
-   ${o?`<div class="muted">With <b style="color:var(--fg)">${esc(W(o.wid).name)}</b> since ${fmtTime(o.outAt)} · Fuel at sign-out ${esc(o.outFuel)}</div>`:last?`<div class="muted">Last back ${fmtDay(last.date)} from ${esc(W(last.wid).name)} · Fuel ${esc(last.inFuel)}${last.inNotes?` · “${esc(last.inNotes)}”`:''}</div>`:'<div class="muted">No sign-outs yet.</div>'}
-   ${next?`<div class="muted">Next: <b style="color:var(--fg)">${fmtDay(next.date)}</b> · ${esc(next.job.client)} · ${esc(W(next.wid).name)}</div>`:''}
-   </div>`}).join('')}</div>
+  const t=iso(today());const next2=[t,iso(addDays(today(),1)),iso(addDays(today(),2))];
+  const rows=S.cars.map(c=>{const o=openTrip(c.id);const nx=shifts().filter(s=>s.carId===c.id&&s.date>=t).sort((a,b)=>(a.date+a.start).localeCompare(b.date+b.start));return {c,o,nx}});
+  const counts={all:rows.length,out:rows.filter(r=>r.o).length,booked:rows.filter(r=>r.nx.some(s=>next2.includes(s.date))).length,free:rows.filter(r=>!r.o&&!r.nx.some(s=>next2.includes(s.date))).length};
+  const vis=rows.filter(r=>fleetFilter==='all'||(fleetFilter==='out'&&r.o)||(fleetFilter==='booked'&&r.nx.some(s=>next2.includes(s.date)))||(fleetFilter==='free'&&!r.o&&!r.nx.some(s=>next2.includes(s.date))));
+  return `<div><span class="eyebrow">Fleet · ${S.cars.length} cars</span><h2>Cars</h2></div>
+  <div class="card">
+   <div class="seg">${[['all','All'],['out','Out now'],['booked','Booked next 3 days'],['free','Free']].map(([k,l])=>`<button data-fleet="${k}" aria-pressed="${fleetFilter===k}">${l} <span>${counts[k]}</span></button>`).join('')}</div>
+   <input type="search" class="search" placeholder="Search cars" data-filter="#fleetlist" aria-label="Search cars">
+   <div class="list" id="fleetlist">${vis.map(({c,o,nx})=>`<div class="li" data-q="${esc((c.name+' '+c.rego).toLowerCase())}">${sw(c.id)}<div class="body"><b>${esc(c.name)}</b>${c.sample?' <span class="pill n">Sample</span>':''}
+     <div class="muted" style="font-size:.84rem">${o?`Out with <b style="color:var(--fg)">${esc(W(o.wid).name)}</b> since ${fmtTime(o.outAt)}`:nx[0]?`Next: ${fmtDay(nx[0].date)} ${h12(nx[0].start)} · ${esc(nx[0].job.client)} · ${esc(nx[0].wid?W(nx[0].wid).name:'no driver')}${nx.length>1?` · +${nx.length-1} more`:''}`:'Nothing booked'}</div></div>
+     ${o?'<span class="pill no">Out</span>':'<span class="pill ok">In</span>'}</div>`).join('')||'<p class="muted" style="margin:0">No cars match.</p>'}</div>
+  </div>
   <form class="card" id="carform"><span class="eyebrow">Add a car</span><div class="grid2"><label class="f">Name<input id="cname" type="text" required placeholder="e.g. Bentley Mulsanne"></label><label class="f">Rego<input id="crego" type="text" required></label></div><button class="btn" type="submit">Add car</button></form>`;
 }
 
@@ -747,9 +997,9 @@ function logView(){
 /* ---------- Owner: Staff ---------- */
 function staffView(){
   return `<div><span class="eyebrow">Team</span><h2>Staff</h2></div>
-  <div class="card"><div class="list">${S.workers.map(w=>`<div class="li"><div class="avatar">${esc(initials(w.name))}</div><div class="body"><b>${esc(w.name)}</b><div class="muted" style="font-size:.85rem">${w.role==='owner'?'Owner':'Chauffeur'} · PIN <span class="mono">${esc(w.pin)}</span></div></div></div>`).join('')}</div></div>
+  <div class="card"><input type="search" class="search" placeholder="Search ${S.workers.length} staff" data-filter="#stafflist" aria-label="Search staff"><div class="list" id="stafflist">${S.workers.map(w=>`<div class="li" data-q="${esc(w.name.toLowerCase())}"><div class="avatar">${esc(initials(w.name))}</div><div class="body"><b>${esc(w.name)}</b><div class="muted" style="font-size:.85rem">${w.role==='owner'?'Owner':w.sample?'Sample driver':'Chauffeur'} · PIN <span class="mono">${esc(w.pin)}</span></div></div></div>`).join('')}</div></div>
   <form class="card" id="staffform"><span class="eyebrow">Add a chauffeur</span><div class="grid2"><label class="f">Name<input id="wname" type="text" required></label><label class="f">4-digit PIN<input id="wpin" type="text" inputmode="numeric" pattern="\\d{4}" maxlength="4" required></label></div><button class="btn" type="submit">Add chauffeur</button></form>
-  <div class="card"><span class="eyebrow">Demo data</span><p class="muted" style="margin:0">Puts back the 29 Nov run sheet and clears everything else.</p><button class="btn" data-act="reset">Reset demo data</button></div>`;
+  <div class="card"><span class="eyebrow">Demo data</span><p class="muted" style="margin:0">Puts back the sample weekend (your two real run sheets plus example jobs) and clears everything else.</p><button class="btn" data-act="reset">Reset demo data</button></div>`;
 }
 
 /* ---------- Binding ---------- */
@@ -757,6 +1007,12 @@ function bind(){
   const $=s=>document.getElementById(s);
   $('logout').onclick=()=>{me=null;sheet=null;render()};
   $('bell').onclick=()=>{sheet='inbox';render()};
+  document.querySelectorAll('[data-rday]').forEach(b=>b.onclick=()=>{rosterDay=b.dataset.rday;jobsDay=b.dataset.rday;render()});
+  document.querySelectorAll('[data-jday]').forEach(b=>b.onclick=()=>{jobsDay=b.dataset.jday||null;if(jobsDay)rosterDay=jobsDay;render()});
+  document.querySelectorAll('[data-fleet]').forEach(b=>b.onclick=()=>{fleetFilter=b.dataset.fleet;render()});
+  document.querySelectorAll('[data-cday]').forEach(b=>b.onclick=()=>{calDay=b.dataset.cday;render()});
+  document.querySelectorAll('[data-cal]').forEach(b=>b.onclick=()=>{calMonth=new Date(calMonth.getFullYear(),calMonth.getMonth()+(+b.dataset.cal),1);render()});
+  bindFilters();
   document.querySelectorAll('[data-chat]').forEach(b=>b.onclick=()=>{chatJob=b.dataset.chat;S.seen[me.id+'|'+chatJob]=(S.chats[chatJob]||[]).length;S.notes.forEach(n=>{if(n.wid===me.id&&n.jobId===chatJob)n.read=true});save();sheet='chat';render()});
   document.querySelectorAll('[data-note]').forEach(b=>b.onclick=()=>{const n=S.notes.find(x=>x.id===b.dataset.note);n.read=true;save();viewJob=n.jobId;sheet=J(n.jobId)?'job':null;render()});
   if(sheet==='chat'){const log=$('chatlog');if(log)log.scrollTop=log.scrollHeight;
@@ -801,7 +1057,7 @@ function bind(){
 function refreshWarn(){const p=paste.parsed;p.warns=p.warns.filter(w=>{const m=w.match(/"(.+)"/);if(!m)return true;return p.job.lines.some(l=>(/car/.test(w)?!l.carId&&l.carText===m[1]:!l.wid&&l.driverText===m[1]))});
   const st=document.querySelector('.sheet .panel').scrollTop;render();document.querySelector('.sheet .panel').scrollTop=st}
 try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
-if(!S||!S.workers) S=seed();
+if(!S||!S.workers){S=seed();save()}
 S.notes=S.notes||[];S.chats=S.chats||{};S.seen=S.seen||{};
 render();
 })();
