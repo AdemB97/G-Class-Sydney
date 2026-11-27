@@ -3,39 +3,30 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#1C382C">
+<meta name="theme-color" content="#07100C">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="G Class Crew">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<style>html{height:100%}:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-family:system-ui,sans-serif;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>html{height:100%;background:#07100C}:root{color-scheme:dark;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-family:system-ui,sans-serif;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>G Class Crew</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Jost:wght@300;400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap">
 <style>
 /* Layout: single phone-width column app, sticky top bar, bottom tab bar; owner view widens to a roster grid */
 :root{
-  /* G Class Hire brand: racing green, champagne gold, ivory (sampled from gclasshiresydney.com) */
-  --brand:#1C382C; --brand-2:#14291F; --brand-fg:#F6F4ED; --brand-muted:#B9C3B9;
-  --bg:#F6F4ED; --surface:#FFFFFF; --surface-2:#ECE8DC; --fg:#16201B; --muted:#6B7069; --line:#E0DACB;
-  --accent:#A07C3C; --accent-fg:#FFFFFF; --accent-soft:#F1E8D6; --gold-light:#D9BC7E;
-  --ok:#2F6B4A; --ok-soft:#E0EDE3; --no:#9E3A30; --no-soft:#F5E1DD; --warn:#8E6414; --warn-soft:#F4EAD3;
-  --font-display:"Cinzel","Trajan Pro",Georgia,serif;
-  --font-body:"Jost","Futura","Avenir Next",system-ui,sans-serif;
+  /* G Class Hire brand kit (brand/brand-kit.md): dark racing green, gold as a sharp accent, ivory text */
+  --brand:#0E3B2B; --brand-2:#07100C; --brand-fg:#F3EEE3; --brand-muted:#93A096;
+  --bg:#07100C; --surface:#0E1B15; --surface-2:#15271F; --fg:#F3EEE3; --muted:#93A096; --line:#23392E;
+  --accent:#C9A86A; --accent-fg:#07100C; --accent-soft:#2B2312; --gold-light:#E7D3A4;
+  --ok:#7CC49A; --ok-soft:#15261C; --no:#E08479; --no-soft:#2C1714; --warn:#E3B866; --warn-soft:#2B2312;
+  --font-display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --font-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
   --font-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
-  --r:8px;
+  --r:10px;
+  color-scheme:dark;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --brand:#14291F; --brand-2:#0E1E16;
-  --bg:#0E1813; --surface:#15231C; --surface-2:#1E3027; --fg:#EEEBE2; --muted:#9BA59D; --line:#263A30;
-  --accent:#C9A45E; --accent-fg:#14291F; --accent-soft:#2E2A1C;
-  --ok:#7CC198; --ok-soft:#1B3326; --no:#E08378; --no-soft:#3A201C; --warn:#E2B45C; --warn-soft:#3A2E17; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --brand:#14291F; --brand-2:#0E1E16;
-  --bg:#0E1813; --surface:#15231C; --surface-2:#1E3027; --fg:#EEEBE2; --muted:#9BA59D; --line:#263A30;
-  --accent:#C9A45E; --accent-fg:#14291F; --accent-soft:#2E2A1C;
-  --ok:#7CC198; --ok-soft:#1B3326; --no:#E08378; --no-soft:#3A201C; --warn:#E2B45C; --warn-soft:#3A2E17; color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.45}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
@@ -203,6 +194,42 @@ h2{font-size:1.3rem}
 .login .hero .rule{width:64px;height:1px;background:var(--gold-light);opacity:.7}
 .lu.me{border-color:var(--accent);background:var(--accent-soft)}
 
+
+/* masculine pass, per brand kit: Archivo headings, tracked Manrope labels, sharp corners, gold accents */
+h1,h2,h3{font-family:var(--font-display);font-weight:800;letter-spacing:-.01em;text-transform:none}
+h2{font-size:1.35rem}
+.login .hero h1{text-transform:uppercase}
+.eyebrow{font-family:var(--font-body);font-weight:800;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.big,.car .meta b,.stat b,.day .dn,.roster thead th b{font-family:var(--font-display);font-weight:800;letter-spacing:-.01em}
+.card,.stat,.car,.lu,.who button,.chat{border-radius:10px}
+.btn{border-radius:8px;min-height:48px;font-weight:700;letter-spacing:.02em;text-transform:none;font-size:.92rem}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.btn.primary:hover{background:var(--gold-light)}
+.btn:not(.primary):not(.ghost):not(.danger){background:var(--surface-2);border-color:var(--line)}
+input[type=text],input[type=number],input[type=password],input[type=time],input[type=date],select,textarea{border-radius:6px;background:var(--surface-2);border-color:var(--line)}
+.pill{border-radius:4px;font-weight:800;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase}
+.day,.cell,.pickup,.banner,.fuel button{border-radius:6px}
+body::before,.top,.tabs{background:var(--bg)}
+.top{border-bottom:1px solid var(--line)}
+.tabs{border-top:1px solid var(--line)}
+.tabs button{position:relative;color:var(--muted)}
+.tabs button[aria-current="true"]{color:var(--accent)}
+.tabs button[aria-current="true"]::before{content:"";position:absolute;top:-1px;left:25%;right:25%;height:2px;background:var(--accent)}
+.brand img{height:30px}
+.swatch{background:linear-gradient(160deg,var(--brand),var(--bg));color:var(--gold-light);border:1px solid var(--line);border-radius:8px}
+.avatar{background:var(--brand);border:1px solid var(--accent);color:var(--gold-light)}
+.lu.me{background:linear-gradient(160deg,var(--brand),var(--surface));border-color:var(--accent)}
+.cell.sh,.fuel button[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.banner{background:var(--surface-2);color:var(--muted);border-left:2px solid var(--accent)}
+.msg{background:var(--surface-2);border-color:var(--line)} .msg.mine{background:var(--brand);border-color:transparent}
+.toast{background:var(--accent);color:var(--accent-fg)}
+.loginbg{background:linear-gradient(180deg,var(--bg) 0%,var(--bg) 40%,var(--brand) 140%)}
+.login .hero img{width:min(320px,82%)}
+.login .card{background:var(--surface);border-color:var(--line)}
+.sheet{background:rgba(0,0,0,.65)} .sheet .panel{background:var(--surface);border-top:1px solid var(--accent)}
+/* the first job card on Today gets the hero treatment */
+main > .card:has(.pickup){background:linear-gradient(160deg,var(--brand) 0%,var(--surface) 70%);border-color:var(--accent)}
+.mono{font-family:var(--font-mono)}
 </style>
 
 <div id="app"></div>
