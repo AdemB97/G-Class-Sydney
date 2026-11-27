@@ -339,6 +339,14 @@ body.touring main{padding-top:calc(var(--tourh,170px) + 16px)}
 body.touring .sheet{padding-top:var(--tourh,170px)}
 body.touring .sheet .panel{max-height:calc(100dvh - var(--tourh,170px) - 6px)}
 body.touring .toast{display:none}
+
+/* ---------- roster check ---------- */
+.rc-count{display:flex;gap:16px;font-size:.9rem} .rc-count b{font-family:var(--font-display);font-size:1.3rem;margin-right:4px} .rc-count .bad b{color:var(--warn)}
+.rc-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.rc-why{grid-column:1/-1;font-size:.85rem;border-left:2px solid var(--warn);padding:6px 10px;background:var(--surface-2);border-radius:0 6px 6px 0}
+.rc-clash .rc-why{border-left-color:var(--no)}
+.rc-fix{display:flex;align-items:center;gap:8px;margin-top:6px}
+.stats.three{grid-template-columns:repeat(3,1fr)}
 </style>
 
 <div id="app"></div>
@@ -346,7 +354,7 @@ body.touring .toast{display:none}
 <script>
 (function(){
 const pl=(n,w)=>n+' '+w+(n===1?'':'s');
-const KEY='gclass-crew-demo-v7';
+const KEY='gclass-crew-demo-v8';
 const pad=n=>String(n).padStart(2,'0');
 const iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
 const today=()=>{const d=new Date();d.setHours(0,0,0,0);return d};
@@ -465,6 +473,7 @@ function jobWarnings(job){
     if(cc) w.push(`${C(l.carId).name} is also on ${cc.j.client}'s job from ${h12(cc.l.start)}.`);
     const dc=busy.find(b=>l.wid&&b.l.wid===l.wid&&overlaps(b.win,win));
     if(dc) w.push(`${W(l.wid).name} is also driving for ${dc.j.client} from ${h12(dc.l.start)}.`);
+    if(l.wid&&!clearedFor(l.wid,l.carId)) w.push(`${W(l.wid).name} isn't cleared for the ${C(l.carId).name}.`);
   });
   const seen={};job.lines.forEach(l=>{if(l.wid){if(seen[l.wid]&&seen[l.wid]!==l.carId)w.push(`${W(l.wid).name} is on two different cars in this job.`);seen[l.wid]=l.carId}});
   return [...new Set(w)];
@@ -621,6 +630,8 @@ function seed(){
     ...SAMPLE_DRIVERS.map((n,i)=>({id:'s'+i,name:n,pin:'9999',role:'driver',sample:true}))];
   // first four keep the PINs from the earlier demo
   ['1111','2222','3333','4444','5555','6666','7777','8888','9090'].forEach((p,i)=>workers[i+1].pin=p);
+  // Supercar clearance: Adem says only a few drivers may take supercars. Real list not known yet, so this is a guess.
+  workers.forEach((w,i)=>{w.supercar=['Ahmed K','Adem','AS','Oussaama B','Paolo','George'].includes(w.name)||(w.sample&&i%4===0)});
   const cars=[...REAL_CARS.map(([n,c],i)=>({id:'c'+i,name:n,code:c,rego:'Rego TBC'})),...SAMPLE_CARS.map(([n,c],i)=>({id:'x'+i,name:n,code:c,rego:'Rego TBC',sample:true}))];
   S={workers,cars,avail:{},jobs:[],trips:[],notes:[],chats:{},seen:{},confirm:{},seenJob:{},nudged:{}};
   // Availability for the next 14 days: sample drivers mostly free on weekends.
@@ -660,13 +671,13 @@ function exampleJob(date,k,r){
   else {job.reception={venue:pick(r,RECEPTIONS),time:h12(fmt(sMin+60)),t24:fmt(sMin+60)}}
   const busy=busyLines(date,job.id);const used=[];const usedW=[];
   const freeCar=(model,win)=>S.cars.filter(c=>model.test(c.name)&&!used.includes(c.id)&&!busy.some(b=>b.l.carId===c.id&&overlaps(b.win,win)));
-  const freeDriver=win=>{const ws=S.workers.filter(w=>w.role!=='owner'&&!usedW.includes(w.id)&&S.avail[w.id+'|'+date]!=='no'&&!busy.some(b=>b.l.wid===w.id&&overlaps(b.win,win)));
+  const freeDriver=(win,car)=>{const ws=S.workers.filter(w=>w.role!=='owner'&&(!car||!SUPER.test(car.name)||w.supercar)&&!usedW.includes(w.id)&&S.avail[w.id+'|'+date]!=='no'&&!busy.some(b=>b.l.wid===w.id&&overlaps(b.win,win)));
     const pref=ws.filter(w=>S.avail[w.id+'|'+date]==='yes');return (pref.length?pick(r,pref):ws.length?pick(r,ws):null)};
   const groomCars=[],brideCars=[];
   for(let i=0;i<nCars;i++){
     const hours=formal?3:pick(r,[2,3,5,6,6]);const st=(!formal&&i%2===1)?job.groom.t24:start;const win=[toMin(st),toMin(st)+hours*60];
     let car=null;for(let tries=0;tries<12&&!car;tries++){car=freeCar(pick(r,MODELS),win)[0]||null}
-    if(!car)continue;const w=freeDriver(win);used.push(car.id);if(w)usedW.push(w.id);
+    if(!car)continue;const w=freeDriver(win,car);used.push(car.id);if(w)usedW.push(w.id);
     const line={carText:car.name,carId:car.id,wid:w?w.id:'',driverText:w?w.name:'',hours,task:formal?'Formal':(hours<=3?((i%2)?'Groom to church':'Bride to church'):''),note:'',start:st};
     job.lines.push(line);(i%2&&!formal?groomCars:brideCars).push(car.name.replace(/ (\d+|I+|VIII|\(.*\))$/,''));
     busy.push({l:line,j:job,win});
@@ -676,6 +687,33 @@ function exampleJob(date,k,r){
   return job;
 }
 let S;
+
+
+/* ---------- Scheduling checks: availability, clashes, supercar clearance ---------- */
+const SUPER=/ferrari|812|lambo|revuelto|aventador|urus|mclaren|720|porsche|gt3/i;
+const isSuper=carId=>!!carId&&SUPER.test(C(carId).name);
+const clearedFor=(wid,carId)=>!isSuper(carId)||!!W(wid).supercar;
+function suggestDriver(job,l,skip=[]){const win=lineWin(job,l),busy=busyLines(job.date,job.id);const onJob=job.lines.map(x=>x.wid).filter(Boolean);
+  const load=id=>busy.filter(b=>b.l.wid===id).length;
+  return S.workers.filter(w=>w.role!=='owner'&&!onJob.includes(w.id)&&!skip.includes(w.id)&&S.avail[w.id+'|'+job.date]==='yes'&&clearedFor(w.id,l.carId)&&!busy.some(b=>b.l.wid===w.id&&overlaps(b.win,win)))
+    .sort((a,b)=>(!!a.sample-!!b.sample)||(load(a.id)-load(b.id)))[0]||null}
+function lineCheck(job,l){
+  const win=lineWin(job,l),busy=busyLines(job.date,job.id);const n=l.wid?W(l.wid).name:'';
+  const swap=why=>{const w=suggestDriver(job,l);return w?{label:'Swap to '+w.name.split(' ')[0],kind:'swap',wid:w.id,why}:null};
+  const cc=busy.find(b=>l.carId&&b.l.carId===l.carId&&overlaps(b.win,win));
+  if(cc){const fam=C(l.carId).name.replace(/\s*(\d+|I{1,3}|VIII|\(.*\))$/,'').toLowerCase();const alt=S.cars.find(c=>c.id!==l.carId&&c.name.toLowerCase().startsWith(fam)&&!job.lines.some(x=>x.carId===c.id)&&!busy.some(b=>b.l.carId===c.id&&overlaps(b.win,win)));
+    return {k:'clash',why:`${C(l.carId).name} is on ${cc.j.client}'s job from ${h12(cc.l.start)}.`,fix:alt?{label:'Use '+alt.name,kind:'car',cid:alt.id}:null}}
+  if(!l.wid)return {k:'check',why:'No driver yet.',fix:swap()};
+  const dc=busy.find(b=>b.l.wid===l.wid&&overlaps(b.win,win));
+  if(dc){const e=dc.win?dc.win[1]:null;return {k:'clash',why:`${n} is on ${dc.j.client}${e!=null?' until '+h12(pad(Math.floor(e/60)%24)+':'+pad(e%60)):''}.`,fix:swap()}}
+  const v=S.avail[l.wid+'|'+job.date];
+  if(v==='no')return {k:'clash',why:`${n} marked ${fmtDay(job.date)} as Off.`,fix:swap()};
+  if(!clearedFor(l.wid,l.carId))return {k:'check',why:`${n} isn't cleared for supercars.`,fix:swap()};
+  if(!v)return {k:'check',why:`${n} hasn't marked ${fmtDay(job.date)} yet.`,fix:{label:'Ask '+n.split(' ')[0],kind:'ask',wid:l.wid}};
+  return {k:'good',why:`${n} is free.`};
+}
+function jobReady(j){let fix=0,wait=0,gap=0;j.lines.forEach(l=>{const c=lineCheck(j,l);if(!l.wid)gap++;else if(c.k!=='good')fix++;else if(!S.confirm[ck(j.id,l.wid)]&&!S.trips.some(t=>t.jobId===j.id&&t.wid===l.wid))wait++});
+  return {fix,wait,gap,label:gap?`${gap} gap${gap>1?'s':''}`:fix?`${fix} to fix`:wait?`${wait} waiting`:'Ready',cls:gap||fix?'warn':wait?'n':'ok'}}
 
 /* ---------- Demo photos, confirmations, live status ---------- */
 const photoCache={};
@@ -1113,14 +1151,18 @@ function jobSheet(){
 function pasteSheet(){
   const p=paste;
   const preview=p.parsed?(()=>{const {job,warns}=p.parsed;const all=[...warns,...jobWarnings(job)];
-    return `<div class="card"><span class="eyebrow">Check before saving</span>
+    const chk=job.lines.map(l=>lineCheck(job,l));const good=chk.filter(c=>c.k==='good').length;const fixes=chk.filter(c=>c.fix&&c.fix.kind!=='ask').length;const pw=warns;
+    return `<div class="card"><span class="eyebrow">Roster check</span>
     <div><b>${esc(job.client||'No client')}</b> · ${job.date?fmtDay(job.date):'<span style="color:var(--no)">no date</span>'}</div>
-    ${all.length?`<div class="warns">${all.map(w=>`<div class="warn-row">${esc(w)}</div>`).join('')}</div>`:'<div class="pill ok">Everything matched</div>'}
-    ${job.lines.map((l,i)=>`<div class="edit-line"><div class="lbl">${esc(l.carText)}${l.task?' · '+esc(l.task):''}</div>
+    <div class="rc-count"><span><b>${good}</b> good to go</span><span class="${good<chk.length?'bad':''}"><b>${chk.length-good}</b> to fix</span></div>
+    ${pw.length?`<div class="warns">${pw.map(w=>`<div class="warn-row">${esc(w)}</div>`).join('')}</div>`:''}
+    ${job.lines.map((l,i)=>`<div class="edit-line rc-${chk[i].k}"><div class="lbl rc-head"><span>${esc(l.carText)}${l.task?' · '+esc(l.task):''}${isSuper(l.carId)?' <span class="pill n">Supercar</span>':''}</span><span class="pill ${chk[i].k==='good'?'ok':chk[i].k==='clash'?'no':'warn'}">${chk[i].k==='good'?'Good':chk[i].k==='clash'?'Clash':'Check'}</span></div>
+      ${chk[i].k==='good'?'':`<div class="rc-why">${esc(chk[i].why)}${chk[i].fix?`<div class="rc-fix"><span class="muted">Suggested</span><button class="btn sm" data-fix="${i}">${esc(chk[i].fix.label)}</button></div>`:''}</div>`}
       <label class="f">Car<select data-lc="${i}"><option value="">Choose car</option>${(()=>{const win=lineWin(job,l),b=busyLines(job.date,job.id);return S.cars.map(c=>{const x=b.find(y=>y.l.carId===c.id&&overlaps(y.win,win));return `<option value="${c.id}" ${l.carId===c.id?'selected':''}>${esc(c.name)}${x?' (busy '+h12(x.l.start)+')':''}</option>`}).join('')})()}</select></label>
-      <label class="f">Driver<select data-lw="${i}"><option value="">Choose driver</option>${(()=>{const win=lineWin(job,l),b=busyLines(job.date,job.id);return S.workers.map(w=>{const v=S.avail[w.id+'|'+job.date];const x=b.find(y=>y.l.wid===w.id&&overlaps(y.win,win));return {w,v,x}}).sort((a,b)=>(a.x?1:0)-(b.x?1:0)||(a.v==='yes'?0:a.v?2:1)-(b.v==='yes'?0:b.v?2:1)).map(({w,v,x})=>`<option value="${w.id}" ${l.wid===w.id?'selected':''}>${esc(w.name)}${x?' (busy '+h12(x.l.start)+')':v==='yes'?' (free)':v==='no'?' (OFF)':''}</option>`).join('')})()}</select></label>
+      <label class="f">Driver<select data-lw="${i}"><option value="">Choose driver</option>${(()=>{const win=lineWin(job,l),b=busyLines(job.date,job.id);return S.workers.map(w=>{const v=S.avail[w.id+'|'+job.date];const x=b.find(y=>y.l.wid===w.id&&overlaps(y.win,win));return {w,v,x}}).sort((a,b)=>(a.x?1:0)-(b.x?1:0)||(a.v==='yes'?0:a.v?2:1)-(b.v==='yes'?0:b.v?2:1)).map(({w,v,x})=>`<option value="${w.id}" ${l.wid===w.id?'selected':''}>${esc(w.name)}${w.supercar?' · Supercar':''}${x?' (busy '+h12(x.l.start)+')':v==='yes'?' (free)':v==='no'?' (OFF)':''}</option>`).join('')})()}</select></label>
       <label class="f hrs">Hrs<input type="number" step="0.5" min="0" data-lh="${i}" value="${l.hours??''}"></label></div>`).join('')}
-    <button class="btn primary block" data-act="savejob" ${job.date&&job.lines.length?'':'disabled'}>${p.editId?'Save & notify drivers of changes':'Save job & notify drivers'}</button></div>`})():'';
+    ${fixes?`<button class="btn primary block" data-act="fixall" ${job.date&&job.lines.length?'':'disabled'}>Fix ${fixes===1?'it':fixes===2?'both':'all '+fixes} and notify ${job.lines.filter((l,i)=>l.wid||(chk[i].fix&&chk[i].fix.kind==='swap')).length} drivers</button>`:''}
+    <button class="btn ${fixes?'':'primary'} block" data-act="savejob" ${job.date&&job.lines.length?'':'disabled'}>${fixes?'Save as written':p.editId?'Save & notify drivers of changes':'Save job & notify drivers'}</button></div>`})():'';
   return `<div class="sheet" id="sheetbg"><div class="panel" role="dialog" aria-modal="true" aria-label="Run sheet">
    <div class="row"><div><span class="eyebrow">${p.editId?'Edit job':'New job'}</span><h2>Paste the run sheet</h2></div><div class="spacer"></div><button class="btn ghost" data-act="close" aria-label="Close">✕</button></div>
    <p class="muted" style="margin:0">Paste it exactly as you'd send it on WhatsApp. The app reads the cars, drivers, hours and times.</p>
@@ -1184,7 +1226,7 @@ let jobsDay=null, rosterDay=null;
 function jobRow(j){const w=jobWarnings(j).length;const st=[j.groom.t24,j.bride.t24].filter(Boolean).sort()[0]||j.lines[0]?.start||'';
   return `<button class="jobrow" data-job="${j.id}" data-q="${esc((j.client+' '+j.lines.map(l=>(C(l.carId).name||l.carText)+' '+(l.wid?W(l.wid).name:l.driverText)).join(' ')).toLowerCase())}">
    <span class="mono jt">${esc(h12(st)||'TBC')}</span>
-   <span class="jb"><b>${esc(j.client||'Untitled')}</b>${j.example?' <span class="pill n">Example</span>':''}${w?` <span class="pill warn">${w} to check</span>`:''}
+   <span class="jb"><b>${esc(j.client||'Untitled')}</b>${j.example?' <span class="pill n">Example</span>':''}${(()=>{const r=jobReady(j);return ` <span class="pill ${r.cls}">${r.label}</span>`})()}
    <span class="chips">${j.lines.map(l=>`<span class="chip" title="${esc(C(l.carId).name)}">${esc(C(l.carId).code||'?')}<i>${esc(l.wid?W(l.wid).name.split(' ')[0]:'No driver')}</i></span>`).join('')}</span></span></button>`}
 function rosterView(){
   const t=today(); const days=Array.from({length:14},(_,i)=>addDays(t,i)); const people=S.workers;
@@ -1208,6 +1250,12 @@ function rosterView(){
     <div class="stat"><span class="eyebrow">Drivers on</span><b>${driversBusy}<small>/${people.length-1}</small></b></div>
     <div class="stat"><span class="eyebrow">Free, not booked</span><b>${freeDrivers}</b></div>
   </div>
+  ${(()=>{const dj=S.jobs.filter(j=>j.date===rd).map(j=>({j,r:jobReady(j)}));const ready=dj.filter(x=>x.r.label==='Ready').length,fix=dj.filter(x=>x.r.fix||x.r.gap).length,wait=dj.length-ready-fix;
+    const gaps=dj.reduce((n,x)=>n+x.r.gap,0),waits=dj.reduce((n,x)=>n+x.r.wait,0);
+    return `<div class="card"><div class="row"><span class="eyebrow">Day check · ${fmtDay(rd)}</span></div>
+    <div class="stats three"><div class="stat"><span class="eyebrow">Ready</span><b>${ready}</b></div><div class="stat"><span class="eyebrow">To fix</span><b>${fix}</b></div><div class="stat"><span class="eyebrow">Waiting</span><b>${wait}</b></div></div>
+    <div class="list">${dj.filter(x=>x.r.label!=='Ready').slice(0,6).map(({j,r})=>{const bad=j.lines.map(l=>lineCheck(j,l)).find(c=>c.k!=='good');return `<button class="li board-li" data-job="${j.id}"><div class="body"><b>${esc(j.client)}</b><div class="muted" style="font-size:.84rem">${esc(bad?bad.why:r.wait+' driver'+(r.wait>1?'s':'')+' yet to confirm.')}</div></div><span class="pill ${r.cls}">${r.label}</span></button>`}).join('')||'<p class="muted" style="margin:0">Every job this day is ready.</p>'}</div>
+    <div class="grid2">${gaps?`<button class="btn primary" data-act="fillgaps" data-day="${rd}">Fill ${gaps} gap${gaps>1?'s':''} with free drivers</button>`:''}${waits?`<button class="btn" data-act="remindall" data-day="${rd}">Remind ${waits} to confirm</button>`:''}</div></div>`})()}
   <div class="ownergrid">
   <div class="card"><div class="row"><span class="eyebrow">Upcoming jobs</span><div class="spacer"></div>
     <div class="seg"><button data-jday="" aria-pressed="${!jobsDay}">All</button>${dates.slice(0,4).map(d=>`<button data-jday="${d}" aria-pressed="${jobsDay===d}">${fmtDay(d).split(' ')[0]}</button>`).join('')}</div></div>
@@ -1287,7 +1335,8 @@ function logView(){
 /* ---------- Owner: Staff ---------- */
 function staffView(){
   return `<div><span class="eyebrow">Team</span><h2>Staff</h2></div>
-  <div class="card"><input type="search" class="search" placeholder="Search ${S.workers.length} staff" data-filter="#stafflist" aria-label="Search staff"><div class="list" id="stafflist">${S.workers.map(w=>`<div class="li" data-q="${esc(w.name.toLowerCase())}"><div class="avatar">${esc(initials(w.name))}</div><div class="body"><b>${esc(w.name)}</b><div class="muted" style="font-size:.85rem">${w.role==='owner'?'Owner':w.sample?'Sample driver':'Chauffeur'} · PIN <span class="mono">${esc(w.pin)}</span></div></div></div>`).join('')}</div></div>
+  <div class="card"><input type="search" class="search" placeholder="Search ${S.workers.length} staff" data-filter="#stafflist" aria-label="Search staff"><div class="list" id="stafflist">${S.workers.map(w=>`<div class="li" data-q="${esc(w.name.toLowerCase())}"><div class="avatar">${esc(initials(w.name))}</div><div class="body"><b>${esc(w.name)}</b><div class="muted" style="font-size:.85rem">${w.role==='owner'?'Owner':w.sample?'Sample driver':'Chauffeur'} · PIN <span class="mono">${esc(w.pin)}</span></div></div><button class="btn sm ${w.supercar?'':'ghost'}" data-super="${w.id}" aria-pressed="${!!w.supercar}">${w.supercar?'Supercar ✓':'Supercar'}</button></div>`).join('')}</div></div>
+  <p class="muted" style="margin:0;font-size:.84rem">Supercar means cleared to drive the Ferrari, Lamborghinis, McLaren and Porsche. The app flags anyone else put on one. The cleared list here is a placeholder until Ahmed confirms it.</p>
   <form class="card" id="staffform"><span class="eyebrow">Add a chauffeur</span><div class="grid2"><label class="f">Name<input id="wname" type="text" required></label><label class="f">4-digit PIN<input id="wpin" type="text" inputmode="numeric" pattern="\\d{4}" maxlength="4" required></label></div><button class="btn" type="submit">Add chauffeur</button></form>
   <div class="card"><span class="eyebrow">Demo data</span><p class="muted" style="margin:0">Puts back the sample weekend (your two real run sheets plus example jobs) and clears everything else.</p><button class="btn" data-act="reset">Reset demo data</button></div>`;
 }
@@ -1299,6 +1348,7 @@ function bind(){
   $('demo').onclick=()=>{sheet='demo';render()};
   document.querySelectorAll('[data-tour]').forEach(b=>b.onclick=()=>{if(b.dataset.tour==='exit'){tour=null;render()}else tourNext()});
   document.querySelectorAll('[data-as]').forEach(b=>b.onclick=()=>{me=W(b.dataset.as);tab='today';sheet=null;render();scrollTo(0,0)});
+  document.querySelectorAll('[data-super]').forEach(b=>b.onclick=()=>{const w=W(b.dataset.super);w.supercar=!w.supercar;save();render();toast(`${w.name} ${w.supercar?'cleared':'no longer cleared'} for supercars`)});
   document.querySelectorAll('[data-nudge]').forEach(b=>b.onclick=e=>{e.stopPropagation();const [jid,wid]=b.dataset.nudge.split('|');const j=J(jid),l=j.lines.find(x=>x.wid===wid);
     S.notes.push({id:uid(),wid,jobId:jid,text:`Reminder from ${me.name.split(' ')[0]}: please confirm ${j.client} on ${fmtDay(j.date)} (${C(l.carId).name}).`,at:Date.now(),read:false});S.nudged[b.dataset.nudge]=Date.now();save();render();toast(`Nudged ${W(wid).name}`)});
   document.querySelectorAll('[data-confirm]').forEach(b=>b.onclick=()=>{const jid=b.dataset.confirm;S.confirm[ck(jid,me.id)]=Date.now();S.seenJob[ck(jid,me.id)]=Date.now();
@@ -1329,6 +1379,9 @@ function bind(){
     if(a==='editjob'){const j=J(viewJob);paste={text:runSheetText(j),editId:j.id,parsed:null};sheet='paste';render()}
     if(a==='parse'){paste.text=$('pastein').value;paste.parsed=parseRunSheet(paste.text);if(paste.editId)paste.parsed.job.id=paste.editId;render();setTimeout(()=>document.querySelector('[data-act="savejob"]')?.scrollIntoView({block:'nearest'}),0)}
     if(a==='savejob')saveJob();
+    if(a==='fixall'){const job=paste.parsed.job;for(let pass=0;pass<2;pass++)job.lines.forEach(l=>{const c=lineCheck(job,l);if(c.fix&&c.fix.kind==='swap'){l.wid=c.fix.wid;l.driverText=W(c.fix.wid).name}if(c.fix&&c.fix.kind==='car')l.carId=c.fix.cid});saveJob()}
+    if(a==='fillgaps'){const d=b.dataset.day;let n=0;S.jobs.filter(j=>j.date===d).forEach(j=>j.lines.forEach(l=>{if(!l.wid){const w=suggestDriver(j,l);if(w){l.wid=w.id;l.driverText=w.name;n++;S.notes.push({id:uid(),wid:w.id,jobId:j.id,text:`New job · ${fmtDay(j.date)} · ${C(l.carId).name}. Start ${h12(l.start)||'TBC'}.`,at:Date.now(),read:false})}}}));save();render();toast(n?`Filled ${n} gap${n>1?'s':''} and notified the drivers`:'No free drivers for those gaps')}
+    if(a==='remindall'){const d=b.dataset.day;let n=0;S.jobs.filter(j=>j.date===d).forEach(j=>j.lines.forEach(l=>{const k=ck(j.id,l.wid);if(l.wid&&!S.confirm[k]&&!S.nudged[k]){S.notes.push({id:uid(),wid:l.wid,jobId:j.id,text:`Reminder from ${me.name.split(' ')[0]}: please confirm ${j.client} on ${fmtDay(j.date)} (${C(l.carId).name}).`,at:Date.now(),read:false});S.nudged[k]=Date.now();n++}}));save();render();toast(n?`Reminded ${n} driver${n>1?'s':''}`:'Everyone has been reminded')}
     if(a==='deljob'){if(delArm===viewJob){S.jobs=S.jobs.filter(j=>j.id!==viewJob);save();sheet=null;delArm=null;render();toast('Job deleted')}else{delArm=viewJob;render()}}
     if(a==='copyrs'){const txt=runSheetText(J(viewJob));try{await navigator.clipboard.writeText(txt);toast('Copied. Paste it into WhatsApp.')}catch(e){toast('Copy blocked here. Open Edit and copy the text.')}}
     if(a==='allfree'){for(let i=0;i<14;i++){const k=me.id+'|'+iso(addDays(today(),i));if(!S.avail[k])S.avail[k]='yes'}save();render();toast('Marked as Free')}
@@ -1339,6 +1392,10 @@ function bind(){
   });
   if(sheet==='paste'&&paste.parsed){
     const L=paste.parsed.job.lines;
+    document.querySelectorAll('[data-fix]').forEach(b=>b.onclick=()=>{const job=paste.parsed.job,l=L[+b.dataset.fix],c=lineCheck(job,l);if(!c.fix)return;
+      if(c.fix.kind==='car'){l.carId=c.fix.cid;paste.text=$('pastein').value;refreshWarn();toast('Switched to '+C(c.fix.cid).name);return}
+      if(c.fix.kind==='swap'){l.wid=c.fix.wid;l.driverText=W(c.fix.wid).name;paste.text=$('pastein').value;refreshWarn();toast('Swapped to '+W(c.fix.wid).name)}
+      else{S.notes.push({id:uid(),wid:c.fix.wid,jobId:null,text:`${me.name.split(' ')[0]} asks: are you free ${fmtDay(job.date)}? Please mark your availability.`,at:Date.now(),read:false});save();toast('Asked '+W(c.fix.wid).name)}});
     document.querySelectorAll('[data-lc]').forEach(s=>s.onchange=()=>{L[+s.dataset.lc].carId=s.value;paste.text=$('pastein').value;refreshWarn()});
     document.querySelectorAll('[data-lw]').forEach(s=>s.onchange=()=>{L[+s.dataset.lw].wid=s.value;paste.text=$('pastein').value;refreshWarn()});
     document.querySelectorAll('[data-lh]').forEach(s=>s.oninput=()=>{L[+s.dataset.lh].hours=s.value?+s.value:null});
