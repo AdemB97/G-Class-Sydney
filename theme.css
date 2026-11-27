@@ -1,0 +1,19 @@
+/* G Class Crew theme. Swap these tokens (and the font link in index.html) to rebrand the whole app. */
+:root{
+  --bg:#F3F3F1; --surface:#FFFFFF; --surface-2:#ECECE8; --fg:#17181A; --muted:#6B6C70; --line:#DCDCD7;
+  --accent:#9C7A44; --accent-fg:#FFFFFF; --accent-soft:#F1E9DC;
+  --ok:#2F7D4F; --ok-soft:#E1F0E6; --no:#A23B33; --no-soft:#F6E2DF; --warn:#9A6A12; --warn-soft:#F6ECD6;
+  --font-display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --font-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --r:12px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121315; --surface:#1B1C1F; --surface-2:#25262A; --fg:#ECECEA; --muted:#9A9BA0; --line:#2F3035;
+  --accent:#CBA66B; --accent-fg:#17181A; --accent-soft:#33291B;
+  --ok:#6CC08D; --ok-soft:#1C3326; --no:#E07B72; --no-soft:#3A1F1D; --warn:#E0B25A; --warn-soft:#3A2E17; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121315; --surface:#1B1C1F; --surface-2:#25262A; --fg:#ECECEA; --muted:#9A9BA0; --line:#2F3035;
+  --accent:#CBA66B; --accent-fg:#17181A; --accent-soft:#33291B;
+  --ok:#6CC08D; --ok-soft:#1C3326; --no:#E07B72; --no-soft:#3A1F1D; --warn:#E0B25A; --warn-soft:#3A2E17; color-scheme:dark}
+*{box-sizing:border-box}

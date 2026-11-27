@@ -1,7 +1,7 @@
-# G Class Crew (demo)
+# G Class Crew
 
-Staff app demo for G Class Hire Sydney: run sheets pasted from WhatsApp, driver notifications, a group chat per wedding, two-week availability, and car sign-out/return with photos.
+Internal staff app for G Class Hire Sydney: run sheets, driver notifications, a group chat per wedding, two-week availability, and car sign-out/return with photos.
 
-This `main` branch is a **demo**: no logins (pick a name, demo PIN), and everything is saved only on the phone or computer it's opened on. Live via GitHub Pages.
-
-The full online version (shared data, real logins, photo storage via Supabase) is on the `online-version` branch.
+- Static site (no build step): `index.html`, `app.js`, `app.css`, `theme.css`, `config.js`.
+- Data, logins and photos: Supabase (`supabase/schema.sql` sets up tables and access rules).
+- Setup steps: see [SETUP.md](SETUP.md).
