@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#17181A">
+<meta name="theme-color" content="#1C382C">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="G Class Crew">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -12,26 +12,30 @@
 <style>html{height:100%}:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-family:system-ui,sans-serif;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>G Class Crew</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Jost:wght@300;400;500;600&family=JetBrains+Mono:wght@500&display=swap">
 <style>
 /* Layout: single phone-width column app, sticky top bar, bottom tab bar; owner view widens to a roster grid */
 :root{
-  --bg:#F3F3F1; --surface:#FFFFFF; --surface-2:#ECECE8; --fg:#17181A; --muted:#6B6C70; --line:#DCDCD7;
-  --accent:#9C7A44; --accent-fg:#FFFFFF; --accent-soft:#F1E9DC;
-  --ok:#2F7D4F; --ok-soft:#E1F0E6; --no:#A23B33; --no-soft:#F6E2DF; --warn:#9A6A12; --warn-soft:#F6ECD6;
-  --font-display:"Archivo","Helvetica Neue",Arial,sans-serif;
-  --font-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  /* G Class Hire brand: racing green, champagne gold, ivory (sampled from gclasshiresydney.com) */
+  --brand:#1C382C; --brand-2:#14291F; --brand-fg:#F6F4ED; --brand-muted:#B9C3B9;
+  --bg:#F6F4ED; --surface:#FFFFFF; --surface-2:#ECE8DC; --fg:#16201B; --muted:#6B7069; --line:#E0DACB;
+  --accent:#A07C3C; --accent-fg:#FFFFFF; --accent-soft:#F1E8D6; --gold-light:#D9BC7E;
+  --ok:#2F6B4A; --ok-soft:#E0EDE3; --no:#9E3A30; --no-soft:#F5E1DD; --warn:#8E6414; --warn-soft:#F4EAD3;
+  --font-display:"Cinzel","Trajan Pro",Georgia,serif;
+  --font-body:"Jost","Futura","Avenir Next",system-ui,sans-serif;
   --font-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
-  --r:12px;
+  --r:8px;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#121315; --surface:#1B1C1F; --surface-2:#25262A; --fg:#ECECEA; --muted:#9A9BA0; --line:#2F3035;
-  --accent:#CBA66B; --accent-fg:#17181A; --accent-soft:#33291B;
-  --ok:#6CC08D; --ok-soft:#1C3326; --no:#E07B72; --no-soft:#3A1F1D; --warn:#E0B25A; --warn-soft:#3A2E17; color-scheme:dark}}
+  --brand:#14291F; --brand-2:#0E1E16;
+  --bg:#0E1813; --surface:#15231C; --surface-2:#1E3027; --fg:#EEEBE2; --muted:#9BA59D; --line:#263A30;
+  --accent:#C9A45E; --accent-fg:#14291F; --accent-soft:#2E2A1C;
+  --ok:#7CC198; --ok-soft:#1B3326; --no:#E08378; --no-soft:#3A201C; --warn:#E2B45C; --warn-soft:#3A2E17; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#121315; --surface:#1B1C1F; --surface-2:#25262A; --fg:#ECECEA; --muted:#9A9BA0; --line:#2F3035;
-  --accent:#CBA66B; --accent-fg:#17181A; --accent-soft:#33291B;
-  --ok:#6CC08D; --ok-soft:#1C3326; --no:#E07B72; --no-soft:#3A1F1D; --warn:#E0B25A; --warn-soft:#3A2E17; color-scheme:dark}
+  --brand:#14291F; --brand-2:#0E1E16;
+  --bg:#0E1813; --surface:#15231C; --surface-2:#1E3027; --fg:#EEEBE2; --muted:#9BA59D; --line:#263A30;
+  --accent:#C9A45E; --accent-fg:#14291F; --accent-soft:#2E2A1C;
+  --ok:#7CC198; --ok-soft:#1B3326; --no:#E08378; --no-soft:#3A201C; --warn:#E2B45C; --warn-soft:#3A2E17; color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.45}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
@@ -163,6 +167,42 @@ textarea.paste{min-height:260px;font-family:var(--font-mono);font-size:.8rem;lin
 .who-l{font-size:.7rem;font-weight:700;color:var(--muted)}
 .sysmsg{align-self:center;font-size:.74rem;color:var(--muted);text-align:center;max-width:90%}
 .pickup{background:var(--bg);border-radius:10px;padding:10px 12px;font-size:.9rem}
+
+/* ---- G Class Hire brand treatment ---- */
+body{font-size:15.5px;letter-spacing:.005em}
+body::before{background:var(--brand)}
+h1,h2,h3{font-weight:600;letter-spacing:.03em}
+h2{font-size:1.3rem}
+.eyebrow{color:var(--accent);letter-spacing:.16em;font-weight:600}
+.top{background:var(--brand);border-bottom:1px solid rgba(201,164,94,.35);color:var(--brand-fg)}
+.top .avatar{background:transparent;border:1px solid var(--gold-light);color:var(--gold-light)}
+.brand{display:flex;flex-direction:column;gap:2px;min-width:0}
+.brand img{height:26px;width:auto;display:block}
+.brand small{color:var(--brand-muted);font-size:.74rem}
+.top .btn.ghost{color:var(--brand-fg)}
+.bell{background:transparent;border-color:rgba(246,244,237,.25);color:var(--brand-fg)}
+.tabs{background:var(--brand);border-top:1px solid rgba(201,164,94,.35)}
+.tabs button{color:var(--brand-muted);font-weight:500;letter-spacing:.04em}
+.tabs button[aria-current="true"]{color:var(--gold-light)}
+.btn{font-weight:600;letter-spacing:.02em;border-radius:6px}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:var(--brand-fg)}
+.btn.primary:hover{background:var(--brand-2)}
+.card,.stat,.car{border-radius:var(--r)}
+.big,.car .meta b,.stat b,.day .dn,.roster thead th b{font-family:var(--font-display);font-weight:600;letter-spacing:.02em}
+.swatch{background:var(--brand);color:var(--gold-light);font-family:var(--font-display);border-color:transparent}
+.avatar{background:var(--accent-soft);color:var(--accent);font-family:var(--font-display)}
+.pill.acc{background:var(--accent-soft);color:var(--accent)}
+.cell.sh{background:var(--brand);color:var(--gold-light);border-color:var(--brand)}
+.day.shift{box-shadow:inset 0 0 0 2px var(--accent)}
+.fuel button[aria-pressed="true"]{background:var(--brand);color:var(--brand-fg);border-color:var(--brand)}
+.loginbg{background:radial-gradient(120% 70% at 50% 0%,#24463A 0%,var(--brand) 55%,var(--brand-2) 100%);min-height:100vh;margin-top:calc(-1 * env(safe-area-inset-top,0px));padding-top:env(safe-area-inset-top,0px)}
+.login .hero{align-items:center;text-align:center;color:var(--brand-fg);gap:10px}
+.login .hero img{width:min(300px,80%);height:auto}
+.login .hero .eyebrow{color:var(--gold-light)}
+.login .hero p{color:var(--brand-muted);margin:0}
+.login .hero .rule{width:64px;height:1px;background:var(--gold-light);opacity:.7}
+.lu.me{border-color:var(--accent);background:var(--accent-soft)}
+
 </style>
 
 <div id="app"></div>
@@ -440,7 +480,7 @@ function render(){
   app.innerHTML=`
   <header class="top"><div class="wrap ${owner?'wide':''}">
     <div class="avatar">${esc(initials(me.name))}</div>
-    <div class="brand">G Class Crew<small>${esc(me.name)} · ${owner?'Owner':'Chauffeur'}</small></div>
+    <div class="brand"><img src="logo.png" alt="G Class Hire"><small>${esc(me.name)} · ${owner?'Owner':'Chauffeur'}</small></div>
     <div class="spacer"></div>
     <button class="bell" id="bell" aria-label="Inbox, ${unreadCount()} unread"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>${unreadCount()?`<span class="dot">${unreadCount()}</span>`:''}</button>
     <button class="btn ghost" id="logout">Log out</button>
@@ -453,9 +493,9 @@ function render(){
 
 /* ---------- Login ---------- */
 function loginView(){
-  return `<div class="wrap login">
-   <div class="hero"><span class="eyebrow">G Class Hire Sydney · Staff only</span><h1>G Class Crew</h1>
-   <p class="muted">Run sheets, availability and car sign-out in one place.</p></div>
+  return `<div class="loginbg"><div class="wrap login">
+   <div class="hero"><img src="logo.png" alt="G Class Hire"><div class="rule"></div><span class="eyebrow">Crew · Staff only</span>
+   <p>Run sheets, availability and car sign-out in one place.</p></div>
    <div class="card">
      <span class="eyebrow">Who's signing in?</span>
      <div class="who">${S.workers.map(w=>`<button data-w="${w.id}" aria-pressed="${loginPick===w.id}"><div class="row"><div class="avatar">${esc(initials(w.name))}</div></div><b>${esc(w.name)}</b><span class="muted" style="font-size:.78rem">${w.role==='owner'?'Owner':'Chauffeur'}</span></button>`).join('')}</div>
@@ -464,7 +504,7 @@ function loginView(){
        <button class="btn primary" type="submit">Sign in</button>
      </form>
      <div class="banner">Prototype: demo PINs are 0000 for Ahmed K (owner), then 1111 Sammy, 2222 Michael I, 3333 Oussaama B, 4444 Adem. Data is saved on this device only.</div>
-   </div></div>`;
+   </div></div></div>`;
 }
 function bindLogin(){
   document.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{loginPick=b.dataset.w;render();setTimeout(()=>document.getElementById('pinin')?.focus(),0)});
